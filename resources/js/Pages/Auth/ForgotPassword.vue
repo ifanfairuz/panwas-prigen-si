@@ -1,60 +1,94 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/inertia-vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Head, useForm } from "@inertiajs/inertia-vue3";
+import AuthenticationCard from "@/Components/AuthenticationCard.vue";
+import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import AuthLayout from "@/Layouts/AuthLayout.vue";
 
 defineProps({
     status: String,
 });
 
 const form = useForm({
-    email: '',
+    email: "",
 });
 
 const submit = () => {
-    form.post(route('password.email'));
+    form.post(route("password.email"));
 };
 </script>
 
 <template>
     <Head title="Forgot Password" />
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
+    <AuthLayout>
+        <div class="container mx-auto px-4 h-full">
+            <div class="flex content-center items-center justify-center h-full">
+                <div class="w-full lg:w-4/12 px-4">
+                    <div
+                        class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-slate-200 border-0"
+                    >
+                        <div class="rounded-t mb-0 px-6 py-6">
+                            <div class="flex flex-col items-center">
+                                <AuthenticationCardLogo />
+                            </div>
+                            <hr class="mt-6 border-b-1 border-blueGray-300" />
+                        </div>
+                        <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+                            <div class="mb-4 text-sm text-gray-600">
+                                lupa kata sandi Anda? Tidak masalah. isi alamat
+                                email Anda dan kami akan mengirim email kepada
+                                Anda tautan setel ulang kata sandi.
+                            </div>
+                            <div
+                                v-if="status"
+                                class="mb-4 font-medium text-sm text-green-600"
+                            >
+                                {{ status }}
+                            </div>
+                            <form @submit.prevent="submit">
+                                <div class="relative w-full mb-3">
+                                    <label
+                                        class="block uppercase text-slate-600 text-xs font-bold mb-2"
+                                        htmlFor="grid-password"
+                                    >
+                                        Email
+                                    </label>
+                                    <input
+                                        v-model="form.email"
+                                        id="email"
+                                        type="email"
+                                        class="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                        placeholder="Email"
+                                        required
+                                        autofocus
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.email"
+                                    />
+                                </div>
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
-        </div>
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
+                                <div class="text-center mt-6">
+                                    <button
+                                        type="submit"
+                                        class="bg-slate-800 text-white active:bg-slate-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                                        :class="{
+                                            'opacity-25': form.processing,
+                                        }"
+                                        :disabled="form.processing"
+                                    >
+                                        Kirim Link Reset Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+        </div>
+    </AuthLayout>
 </template>
