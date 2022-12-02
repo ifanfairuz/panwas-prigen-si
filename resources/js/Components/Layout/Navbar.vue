@@ -1,6 +1,6 @@
 <script setup>
 import Banner from "../Banner.vue";
-import FormSearch from "./FormSearch.vue";
+// import FormSearch from "./FormSearch.vue";
 import UserDropdown from "./UserDropdown.vue";
 </script>
 
@@ -15,17 +15,17 @@ import UserDropdown from "./UserDropdown.vue";
             >
                 <!-- Brand -->
                 <a
-                    class="text-slate-800 text-lg hidden lg:inline-block font-semibold"
+                    class="text-lg hidden lg:inline-block font-semibold"
                     href="javascript:void(0)"
                 >
                     <slot name="header" />
                 </a>
                 <!-- Form -->
-                <div
+                <!-- <div
                     class="md:flex hidden flex-row flex-wrap items-center lg:ml-auto"
                 >
                     <FormSearch />
-                </div>
+                </div> -->
                 <!-- User -->
                 <div
                     class="flex-col md:flex-row list-none items-center hidden md:flex"

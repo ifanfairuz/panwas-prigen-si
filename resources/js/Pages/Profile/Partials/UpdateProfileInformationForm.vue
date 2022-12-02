@@ -7,7 +7,7 @@ import FormSection from "@/Components/Section/FormSection.vue";
 import InputError from "@/Components/Form/InputError.vue";
 import InputLabel from "@/Components/Form/InputLabel.vue";
 import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
-import SecondaryButton from "@/Components/Button/Modal.vue";
+import SecondaryButton from "@/Components/Modal/Modal.vue";
 import TextInput from "@/Components/Form/TextInput.vue";
 
 const props = defineProps({

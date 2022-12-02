@@ -2,10 +2,9 @@
 import { ref } from "vue";
 import UserDropdown from "../Layout/UserDropdown.vue";
 import Logo from "@/Components/Logo.vue";
-import TextInput from "../Form/TextInput.vue";
-import FormSearch from "../Layout/FormSearch.vue";
-import { Link } from "@inertiajs/inertia-vue3";
+// import FormSearch from "../Layout/FormSearch.vue";
 import NavLink from "./NavLink.vue";
+import NavHead from "./NavHead.vue";
 
 let show = ref(false);
 
@@ -14,7 +13,7 @@ const setShow = (v) => (show.value = v);
 
 <template>
     <nav
-        class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
+        class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-4"
     >
         <div
             class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"
@@ -39,7 +38,7 @@ const setShow = (v) => (show.value = v);
             <!-- Collapse -->
             <div
                 class="md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded"
-                :class="{ 'bg-white m-2 mt-0 py-3 px-6': show, hidden: !show }"
+                :class="[show ? 'bg-white m-2 mt-0 py-3 px-4' : 'hidden']"
             >
                 <!-- Collapse header -->
                 <div class="md:min-w-full md:hidden block">
@@ -57,12 +56,12 @@ const setShow = (v) => (show.value = v);
                     </div>
                 </div>
                 <!-- Form -->
-                <div class="mt-6 mb-4 md:hidden">
+                <!-- <div class="mt-6 mb-4 md:hidden">
                     <FormSearch />
-                </div>
+                </div> -->
 
                 <!-- Divider -->
-                <hr class="my-2 mb-4 md:min-w-full" />
+                <hr class="my-3 mb-4 md:min-w-full" />
 
                 <!-- Navigation -->
                 <ul class="md:flex-col md:min-w-full flex flex-col list-none">
@@ -76,11 +75,7 @@ const setShow = (v) => (show.value = v);
                 </ul>
 
                 <!-- Heading -->
-                <h6
-                    class="md:min-w-full text-slate-500 text-xs uppercase font-medium block pt-2 pb-1 no-underline"
-                >
-                    Surat
-                </h6>
+                <NavHead>Surat</NavHead>
 
                 <!-- Navigation -->
                 <ul class="md:flex-col md:min-w-full flex flex-col list-none">
@@ -88,14 +83,14 @@ const setShow = (v) => (show.value = v);
                         href="/surat-masuk"
                         :active="route().current('surat.masuk')"
                     >
-                        <i class="fas fa-tv mr-2 text-sm"></i>
+                        <i class="fas fa-envelope-open mr-2 text-sm"></i>
                         Surat Masuk
                     </NavLink>
                     <NavLink
                         href="/surat-keluar"
                         :active="route().current('surat.keluar')"
                     >
-                        <i class="fas fa-tv mr-2 text-sm"></i>
+                        <i class="fas fa-envelope mr-2 text-sm"></i>
                         Surat Keluar
                     </NavLink>
                 </ul>

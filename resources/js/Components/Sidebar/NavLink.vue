@@ -11,11 +11,11 @@ defineProps({
     <li class="items-center">
         <Link
             :href="href"
-            class="text-xs block py-1"
+            class="text-sm block p-2 rounded"
             :class="[
                 active
-                    ? 'text-indigo-500 hover:text-indigo-600'
-                    : 'text-slate-700 hover:text-slate-500',
+                    ? 'text-white hover:bg-indigo-600 bg-indigo-500'
+                    : 'hover:bg-slate-100',
             ]"
         >
             <slot />

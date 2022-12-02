@@ -6,7 +6,7 @@ import ActionSection from "@/Components/Section/ActionSection.vue";
 import DialogModal from "@/Components/Modal/DialogModal.vue";
 import InputError from "@/Components/Form/InputError.vue";
 import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
-import SecondaryButton from "@/Components/Button/Modal.vue";
+import SecondaryButton from "@/Components/Modal/Modal.vue";
 import TextInput from "@/Components/Form/TextInput.vue";
 
 defineProps({

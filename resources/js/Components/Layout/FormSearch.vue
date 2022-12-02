@@ -13,7 +13,7 @@ import TextInput from "../Form/TextInput.vue";
             <TextInput
                 type="text"
                 placeholder="Search here..."
-                class="bg-white pl-9"
+                class="bg-slate-100 pl-9"
             />
         </div>
     </form>
