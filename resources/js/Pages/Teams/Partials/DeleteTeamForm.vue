@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import ActionSection from "@/Components/Section/ActionSection.vue";
-import ConfirmationModal from "@/Components/Modal/TextInput.vue";
+import ConfirmationModal from "@/Components/Modal/ConfirmationModal.vue";
 import DangerButton from "@/Components/Button/DangerButton.vue";
-import SecondaryButton from "@/Components/Modal/Modal.vue";
+import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 
 const props = defineProps({
     team: Object,

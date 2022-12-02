@@ -58,4 +58,13 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * has super team ?
+     * @return bool
+     */
+    public function onSuperTeam()
+    {
+        return $this->currentTeam->super;
+    }
 }

@@ -14,7 +14,7 @@ defineProps({
             class="text-sm block p-2 rounded"
             :class="[
                 active
-                    ? 'text-white hover:bg-indigo-600 bg-indigo-500'
+                    ? 'text-white hover:bg-blue-600 bg-blue-500'
                     : 'hover:bg-slate-100',
             ]"
         >

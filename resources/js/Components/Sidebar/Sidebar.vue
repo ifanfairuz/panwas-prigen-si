@@ -80,20 +80,52 @@ const setShow = (v) => (show.value = v);
                 <!-- Navigation -->
                 <ul class="md:flex-col md:min-w-full flex flex-col list-none">
                     <NavLink
-                        href="/surat-masuk"
-                        :active="route().current('surat.masuk')"
+                        :href="route('surat.masuk.index')"
+                        :active="route().current('surat.masuk.*')"
                     >
                         <i class="fas fa-envelope-open mr-2 text-sm"></i>
                         Surat Masuk
                     </NavLink>
                     <NavLink
-                        href="/surat-keluar"
-                        :active="route().current('surat.keluar')"
+                        :href="route('surat.keluar.index')"
+                        :active="route().current('surat.keluar.*')"
                     >
                         <i class="fas fa-envelope mr-2 text-sm"></i>
                         Surat Keluar
                     </NavLink>
                 </ul>
+
+                <!-- Heading -->
+                <NavHead>Pembukuan</NavHead>
+
+                <!-- Navigation -->
+                <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+                    <NavLink
+                        :href="route('keuangan.index')"
+                        :active="route().current('keuangan.*')"
+                    >
+                        <i class="fas fa-usd mr-2 text-sm"></i>
+                        Keuangan
+                    </NavLink>
+                </ul>
+
+                <template v-if="$page.props.isAdministrator">
+                    <!-- Heading -->
+                    <NavHead>Administrator</NavHead>
+
+                    <!-- Navigation -->
+                    <ul
+                        class="md:flex-col md:min-w-full flex flex-col list-none"
+                    >
+                        <NavLink
+                            :href="route('administration.users.index')"
+                            :active="route().current('administration.users.*')"
+                        >
+                            <i class="fas fa-users mr-2 text-sm"></i>
+                            Users
+                        </NavLink>
+                    </ul>
+                </template>
             </div>
         </div>
     </nav>

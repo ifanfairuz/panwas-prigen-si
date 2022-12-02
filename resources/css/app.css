@@ -2,3 +2,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.vue3-easy-data-table {
+    border-radius: 0.5rem;
+    --easy-table-border: none;
+    --easy-table-header-item-padding: 10px 15px;
+    --easy-table-header-height: 50px;
+    --easy-table-body-item-padding: 10px 15px;
+    --easy-table-body-row-height: 50px;
+    --easy-table-footer-padding: 0px 10px;
+    --easy-table-footer-height: 50px;
+}

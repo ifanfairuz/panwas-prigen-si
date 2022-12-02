@@ -994,7 +994,14 @@ vite@^3.0.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vue@^3.2.31:
+vue3-easy-data-table@^1.5.20:
+  version "1.5.20"
+  resolved "https://registry.yarnpkg.com/vue3-easy-data-table/-/vue3-easy-data-table-1.5.20.tgz#661149338da7a5e841bb18d70aa8d6ccb5128e59"
+  integrity sha512-Vdac+nJD/WR62Gutd8hSsPGWq5+mxhKqHQf9tJcqATJttWLGQRBkEZA9v1ALh+PQDW93t2+UJhdenIuTCO0HIA==
+  dependencies:
+    vue "^3.2.45"
+
+vue@^3.2.31, vue@^3.2.45:
   version "3.2.45"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.45.tgz#94a116784447eb7dbd892167784619fef379b3c8"
   integrity sha512-9Nx/Mg2b2xWlXykmCwiTUCWHbWIj53bnkizBxKai1g61f2Xit700A1ljowpTIM11e3uipOeiPcSqnmBg6gyiaA==

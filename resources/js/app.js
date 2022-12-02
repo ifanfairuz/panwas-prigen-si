@@ -1,14 +1,17 @@
 import "./bootstrap";
 import "../css/app.css";
+import "vue3-easy-data-table/dist/style.css";
 
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
+import Vue3EasyDataTable from "vue3-easy-data-table";
 
 const appName =
-    window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
+    window.document.getElementsByTagName("title")[0]?.innerText ||
+    "Panwascam Prigen";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -18,10 +21,12 @@ createInertiaApp({
             import.meta.glob("./Pages/**/*.vue")
         ),
     setup({ el, app, props, plugin }) {
-        return createApp({ render: () => h(app, props) })
+        const vue = createApp({ render: () => h(app, props) })
             .use(plugin)
-            .use(ZiggyVue, Ziggy)
-            .mount(el);
+            .use(ZiggyVue, Ziggy);
+        vue.component("EasyDataTable", Vue3EasyDataTable);
+
+        return vue.mount(el);
     },
 });
 

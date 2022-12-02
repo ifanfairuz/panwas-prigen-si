@@ -20,7 +20,7 @@ watch(message, async () => {
         <div
             v-if="show && message"
             :class="{
-                'bg-indigo-500': style == 'success',
+                'bg-blue-500': style == 'success',
                 'bg-red-700': style == 'danger',
             }"
         >
@@ -30,7 +30,7 @@ watch(message, async () => {
                         <span
                             class="flex p-2 rounded-lg"
                             :class="{
-                                'bg-indigo-600': style == 'success',
+                                'bg-blue-600': style == 'success',
                                 'bg-red-600': style == 'danger',
                             }"
                         >
@@ -77,7 +77,7 @@ watch(message, async () => {
                             type="button"
                             class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
                             :class="{
-                                'hover:bg-indigo-600 focus:bg-indigo-600':
+                                'hover:bg-blue-600 focus:bg-blue-600':
                                     style == 'success',
                                 'hover:bg-red-600 focus:bg-red-600':
                                     style == 'danger',

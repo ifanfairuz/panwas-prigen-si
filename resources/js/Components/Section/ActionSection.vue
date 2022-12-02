@@ -8,6 +8,9 @@ import SectionTitle from "./SectionTitle.vue";
             <template #title>
                 <slot name="title" />
             </template>
+            <template #aside>
+                <slot name="aside" />
+            </template>
             <template #description>
                 <slot name="description" />
             </template>

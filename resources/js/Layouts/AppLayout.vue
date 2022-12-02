@@ -20,7 +20,7 @@ defineProps({
                     <slot name="header" />
                 </template>
             </Navbar>
-            <div class="px-4 md:px-10 flex flex-col flex-1">
+            <div class="px-4 md:px-8 flex flex-col flex-1">
                 <!-- Page Content -->
                 <main class="flex-1">
                     <slot />

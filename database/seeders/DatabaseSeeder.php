@@ -17,15 +17,21 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // $user = \App\Models\User::factory()->create([
-        //     'name' => "Ifan Fairuz",
-        //     'email' => "ifanfairuz@gmail.com",
-        //     'password' => Hash::make("password"),
-        // ]);
-        // $user->ownedTeams()->save(\App\Models\Team::forceCreate([
-        //     'user_id' => $user->id,
-        //     'name' => explode(' ', $user->name, 2)[0]."'s Team",
-        //     'personal_team' => true,
-        // ]));
+        $user = \App\Models\User::factory()->create([
+            'name' => "Ifan Fairuz",
+            'email' => "ifanfairuz@gmail.com",
+            'password' => Hash::make("password"),
+        ]);
+        $user->ownedTeams()->save(\App\Models\Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => "Super User",
+            'personal_team' => false,
+            'super' => true,
+        ]));
+        $user->ownedTeams()->save(\App\Models\Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => explode(' ', $user->name, 2)[0]."'s Team",
+            'personal_team' => true,
+        ]));
     }
 }

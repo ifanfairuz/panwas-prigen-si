@@ -16,6 +16,17 @@ class TeamPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
+    public function isAdministrator(User $user)
+    {
+        return $user->onSuperTeam();
+    }
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
     public function viewAny(User $user)
     {
         return true;
@@ -41,7 +52,7 @@ class TeamPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return $user->onSuperTeam();
     }
 
     /**
@@ -65,7 +76,7 @@ class TeamPolicy
      */
     public function addTeamMember(User $user, Team $team)
     {
-        return $user->ownsTeam($team);
+        return $user->onSuperTeam();
     }
 
     /**
@@ -77,7 +88,7 @@ class TeamPolicy
      */
     public function updateTeamMember(User $user, Team $team)
     {
-        return $user->ownsTeam($team);
+        return $user->onSuperTeam();
     }
 
     /**
@@ -89,7 +100,7 @@ class TeamPolicy
      */
     public function removeTeamMember(User $user, Team $team)
     {
-        return $user->ownsTeam($team);
+        return $user->onSuperTeam();
     }
 
     /**
@@ -101,6 +112,6 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team)
     {
-        return $user->ownsTeam($team);
+        return $user->onSuperTeam();
     }
 }
