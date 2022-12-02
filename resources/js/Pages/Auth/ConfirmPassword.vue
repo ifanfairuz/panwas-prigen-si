@@ -2,9 +2,9 @@
 import { ref } from "vue";
 import { Head, useForm } from "@inertiajs/inertia-vue3";
 import Logo from "@/Components/Logo.vue";
-import InputError from "@/Components/InputError.vue";
+import InputError from "@/Components/Form/InputError.vue";
 import AuthLayout from "@/Layouts/AuthLayout.vue";
-import TextInput from "@/Components/TextInput.vue";
+import TextInput from "@/Components/Form/TextInput.vue";
 
 const form = useForm({
     password: "",

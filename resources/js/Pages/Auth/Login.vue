@@ -1,9 +1,10 @@
 <script setup>
 import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
 import Logo from "@/Components/Logo.vue";
-import InputError from "@/Components/InputError.vue";
+import InputError from "@/Components/Form/InputError.vue";
 import AuthLayout from "@/Layouts/AuthLayout.vue";
-import TextInput from "@/Components/TextInput.vue";
+import TextInput from "@/Components/Form/TextInput.vue";
+import Checkbox from "@/Components/Form/Checkbox.vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -85,12 +86,10 @@ const submit = () => {
                                     <label
                                         class="inline-flex items-center cursor-pointer"
                                     >
-                                        <input
+                                        <Checkbox
                                             v-model="form.remember"
                                             name="remember"
                                             id="remember-checkbox"
-                                            type="checkbox"
-                                            class="form-checkbox border-0 rounded text-slate-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
                                         />
                                         <span
                                             class="ml-2 text-sm font-semibold text-slate-600"
