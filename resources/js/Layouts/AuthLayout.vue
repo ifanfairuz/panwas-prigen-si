@@ -1,10 +1,8 @@
 <script setup>
-import Navbar from "@/Components/Navbar.vue";
 import FooterSmall from "@/Components/Layout/FooterSmall.vue";
 </script>
 <template>
     <div>
-        <navbar />
         <main>
             <section class="relative w-full h-full py-40 min-h-screen">
                 <div

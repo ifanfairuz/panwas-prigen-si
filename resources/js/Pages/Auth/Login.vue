@@ -1,8 +1,8 @@
 <script setup>
 import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
+import AuthLayout from "@/Layouts/AuthLayout.vue";
 import Logo from "@/Components/Logo.vue";
 import InputError from "@/Components/Form/InputError.vue";
-import AuthLayout from "@/Layouts/AuthLayout.vue";
 import TextInput from "@/Components/Form/TextInput.vue";
 import Checkbox from "@/Components/Form/Checkbox.vue";
 
