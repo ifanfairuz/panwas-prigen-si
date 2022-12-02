@@ -17,7 +17,9 @@ const emit = defineEmits(["submit"]);
 
 <template>
     <FormSection @submitted="emit('submit')">
-        <template #title> Edit User </template>
+        <template #title>
+            <slot name="title" />
+        </template>
         <template #form>
             <div class="col-span-6 sm:col-span-4">
                 <InputLabel for="name" value="Name" />

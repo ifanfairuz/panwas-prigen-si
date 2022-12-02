@@ -28,7 +28,9 @@ const submit = () => {
         <template #header> Users </template>
 
         <div class="py-8">
-            <Form :form="form" @submit="submit" />
+            <Form :form="form" @submit="submit">
+                <template #title> Edit User </template>
+            </Form>
         </div>
     </AppLayout>
 </template>
