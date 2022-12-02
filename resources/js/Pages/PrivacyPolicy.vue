@@ -1,6 +1,6 @@
 <script setup>
 import { Head } from "@inertiajs/inertia-vue3";
-import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
+import Logo from "@/Components/Logo.vue";
 
 defineProps({
     policy: String,
@@ -14,7 +14,7 @@ defineProps({
         <div class="pt-4 bg-gray-100">
             <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
                 <div>
-                    <AuthenticationCardLogo />
+                    <Logo />
                 </div>
 
                 <div

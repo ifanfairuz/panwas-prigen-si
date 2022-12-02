@@ -1,12 +1,9 @@
 <script setup>
 import { Head, useForm } from "@inertiajs/inertia-vue3";
-import AuthenticationCard from "@/Components/AuthenticationCard.vue";
-import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
+import Logo from "@/Components/Logo.vue";
 import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import TextInput from "@/Components/TextInput.vue";
 import AuthLayout from "@/Layouts/AuthLayout.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 defineProps({
     status: String,
@@ -33,9 +30,9 @@ const submit = () => {
                     >
                         <div class="rounded-t mb-0 px-6 py-6">
                             <div class="flex flex-col items-center">
-                                <AuthenticationCardLogo />
+                                <Logo />
                             </div>
-                            <hr class="mt-6 border-b-1 border-blueGray-300" />
+                            <hr class="mt-6 border-b-1 border-slate-300" />
                         </div>
                         <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
                             <div class="mb-4 text-sm text-gray-600">
@@ -53,15 +50,13 @@ const submit = () => {
                                 <div class="relative w-full mb-3">
                                     <label
                                         class="block uppercase text-slate-600 text-xs font-bold mb-2"
-                                        htmlFor="grid-password"
                                     >
                                         Email
                                     </label>
-                                    <input
+                                    <TextInput
                                         v-model="form.email"
                                         id="email"
                                         type="email"
-                                        class="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                         placeholder="Email"
                                         required
                                         autofocus
