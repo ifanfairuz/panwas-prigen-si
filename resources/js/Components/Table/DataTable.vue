@@ -1,22 +1,33 @@
 <script setup>
-import { ref, computed, useAttrs } from "vue";
+import { ref, computed, useAttrs, onMounted } from "vue";
 
 const { headers } = useAttrs();
+const inputComp = ref(null);
 const search = ref("");
 const searchFields = computed(() =>
     headers
         .filter((h) => !("searchable" in h) || h.searchable)
         .map((h) => h.value)
 );
+const focusSearch = (e) => {
+    if (e.keyCode == 191 && inputComp.value !== document.activeElement) {
+        e.preventDefault();
+        inputComp.value.focus();
+    }
+};
+onMounted(() => {
+    window.removeEventListener("keydown", focusSearch);
+    window.addEventListener("keydown", focusSearch);
+});
 </script>
 
 <template>
     <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2 justify-end">
             <div class="flex items-center gap-4">
-                <label class="text-slate-700">Search:</label>
+                <label class="text-slate-700">Cari:</label>
                 <div
-                    class="flex items-center rounded-3xl overflow-hidden border border-blue-300 placeholder-slate-400 text-slate-600 bg-gray-50 rounded text-sm shadow-md focus:outline-none w-[300px]"
+                    class="py-2 px-1 flex items-center rounded-3xl overflow-hidden border border-blue-300 placeholder-slate-400 text-slate-600 bg-gray-50 rounded text-sm shadow-md focus:outline-none w-[300px]"
                 >
                     <span
                         class="leading-snug font-normal text-center text-slate-300 bg-transparent rounded text-base pl-3"
@@ -24,9 +35,10 @@ const searchFields = computed(() =>
                         <i class="fas fa-search"></i>
                     </span>
                     <input
-                        class="border-0 focus:border-0 focus:ring-none focus:-ml-7 -mr-8 rounded-3xl pl-2 pr-2 py-2 placeholder-slate-400 text-slate-600 bg-gray-50 rounded text-sm outline-none w-full ease-linear transition-all duration-100"
+                        ref="inputComp"
+                        class="border-0 focus:border-0 focus:ring-0 focus:-ml-7 -mr-8 rounded-3xl pl-2 pr-2 py-0 placeholder-slate-400 text-slate-600 bg-gray-50 rounded text-sm outline-none w-full ease-linear transition-all duration-100"
                         v-model="search"
-                        placeholder="Cari..."
+                        placeholder="Tekan '/' untuk mencari..."
                         type="search"
                     />
                 </div>
