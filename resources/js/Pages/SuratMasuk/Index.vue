@@ -15,8 +15,10 @@ defineProps({
 
 const columns = [
     { text: "ID", value: "id", sortable: true },
-    { text: "Nama", value: "name", sortable: true },
-    { text: "Email", value: "email", sortable: true },
+    { text: "Tanggal", value: "tanggal", sortable: true },
+    { text: "Nomor", value: "nomor", sortable: true },
+    { text: "Dari", value: "dari", sortable: true },
+    { text: "Perihal", value: "perihal", sortable: true },
     { text: "Action", value: "action", sortable: false, searchable: false },
 ];
 const deletion = ref(null);
@@ -26,40 +28,47 @@ const tryDelete = (id) => {
     deletion.value = id;
 };
 
-const deleteUser = () => {
-    form.delete(route("administration.users.delete", deletion.value), {
-        errorBag: "deleteUser",
+const deleteData = () => {
+    form.delete(route("surat.masuk.delete", deletion.value), {
+        errorBag: "deleteData",
         onSuccess: () => (deletion.value = null),
     });
 };
 </script>
 
 <template>
-    <AppLayout title="Users">
-        <template #header> Users </template>
+    <AppLayout title="Surat Masuk">
+        <template #header> Surat Masuk </template>
 
         <div class="py-8">
             <ActionSection>
-                <template #title> List Users </template>
+                <template #title> Surat Masuk </template>
+                <template #description>
+                    Data Surat Masuk yang diterima Panwascam Prigen
+                </template>
                 <template #aside>
-                    <Link :href="route('administration.users.add')">
-                        <PrimaryButton> Add Users </PrimaryButton>
+                    <Link :href="route('surat.masuk.add')">
+                        <PrimaryButton> Tambah Surat Masuk </PrimaryButton>
                     </Link>
                 </template>
                 <template #content>
-                    <DataTable :headers="columns" :items="datas" show-index>
+                    <DataTable :headers="columns" :items="datas">
                         <template #item-action="{ id }">
                             <div class="flex gap-2">
                                 <Link
-                                    :href="
-                                        route('administration.users.edit', id)
-                                    "
-                                    class="hover:text-blue-500"
+                                    :href="route('surat.masuk.view', id)"
+                                    class="hover:text-blue-500 px-1"
+                                >
+                                    <i class="fa fa-eye"></i>
+                                </Link>
+                                <Link
+                                    :href="route('surat.masuk.edit', id)"
+                                    class="hover:text-blue-500 px-1"
                                 >
                                     <i class="fa fa-pencil"></i>
                                 </Link>
                                 <button
-                                    class="hover:text-red-500"
+                                    class="hover:text-red-500 px-1"
                                     @click="tryDelete(id)"
                                 >
                                     <i class="fa fa-trash"></i>
@@ -71,27 +80,27 @@ const deleteUser = () => {
             </ActionSection>
         </div>
 
-        <!-- Delete User Confirmation Modal -->
+        <!-- Confirmation Modal -->
         <ConfirmationModal :show="!!deletion" @close="deletion = null">
-            <template #title> Delete User </template>
+            <template #title> Hapus Surat Masuk </template>
 
             <template #content>
-                Are you sure you want to delete this user? all of user resources
-                and data will be permanently deleted.
+                Apakah anda yakin ?, data yang telah dihapus tidak dapat
+                dikembalikan.
             </template>
 
             <template #footer>
                 <SecondaryButton @click="deletion = null">
-                    Cancel
+                    Batal
                 </SecondaryButton>
 
                 <DangerButton
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                    @click="deleteUser"
+                    @click="deleteData"
                 >
-                    Delete User
+                    Ya, Hapus
                 </DangerButton>
             </template>
         </ConfirmationModal>

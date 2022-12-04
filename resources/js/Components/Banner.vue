@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 
 const show = ref(true);
 const style = computed(
@@ -13,6 +14,10 @@ const message = computed(
 watch(message, async () => {
     show.value = true;
 });
+
+Inertia.on("error", () => {
+    show.value = true;
+});
 </script>
 
 <template>
@@ -20,7 +25,7 @@ watch(message, async () => {
         <div
             v-if="show && message"
             :class="{
-                'bg-blue-500': style == 'success',
+                'bg-cyan-500': style == 'success',
                 'bg-red-700': style == 'danger',
             }"
         >
@@ -30,7 +35,7 @@ watch(message, async () => {
                         <span
                             class="flex p-2 rounded-lg"
                             :class="{
-                                'bg-blue-600': style == 'success',
+                                'bg-cyan-600': style == 'success',
                                 'bg-red-600': style == 'danger',
                             }"
                         >
@@ -77,7 +82,7 @@ watch(message, async () => {
                             type="button"
                             class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
                             :class="{
-                                'hover:bg-blue-600 focus:bg-blue-600':
+                                'hover:bg-cyan-600 focus:bg-cyan-600':
                                     style == 'success',
                                 'hover:bg-red-600 focus:bg-red-600':
                                     style == 'danger',

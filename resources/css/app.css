@@ -13,3 +13,6 @@
     --easy-table-footer-padding: 0px 10px;
     --easy-table-footer-height: 50px;
 }
+dl > div:nth-child(2n + 1) {
+    @apply bg-gray-50;
+}

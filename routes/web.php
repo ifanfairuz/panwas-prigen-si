@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SuratMasukController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +31,13 @@ Route::middleware([
 
     // administration
     Route::middleware(['isadministrator'])->name('administration.')->prefix('administration')->group(function () {
+        Route::name('config.')->prefix('config')->group(function (){
+            Route::get('/', [ConfigController::class, 'index'])->name('index');
+            Route::name('dropbox.')->prefix('dropbox')->group(function (){
+                Route::get('/get-access', [ConfigController::class, 'dropbox_getaccess'])->name('getaccess');
+                Route::get('/granted', [ConfigController::class, 'dropbox_granted'])->name('granted');
+            });
+        });
         Route::name('users.')->prefix('users')->group(function (){
             Route::get('/', [UsersController::class, 'index'])->name('index');
             Route::get('/add', [UsersController::class, 'add'])->name('add');
@@ -40,9 +49,15 @@ Route::middleware([
     });
 
     // surat masuk
-    Route::get('/surat-masuk', function () {
-        return Inertia::render('Dashboard');
-    })->name('surat.masuk.index');
+    Route::name('surat.masuk.')->prefix('surat-masuk')->group(function (){
+        Route::get('/', [SuratMasukController::class, 'index'])->name('index');
+        Route::get('/view/{id}', [SuratMasukController::class, 'view'])->name('view');
+        Route::get('/add', [SuratMasukController::class, 'add'])->name('add');
+        Route::post('/add', [SuratMasukController::class, 'create'])->name('create');
+        Route::get('/edit/{id}', [SuratMasukController::class, 'edit'])->name('edit');
+        Route::put('/edit/{id}', [SuratMasukController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [SuratMasukController::class, 'delete'])->name('delete');
+    });
 
     // surat keluar
     Route::get('/surat-keluar', function () {

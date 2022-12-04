@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <li class="items-center">
+    <li class="items-center mb-1">
         <Link
             :href="href"
             class="text-sm block p-2 rounded"

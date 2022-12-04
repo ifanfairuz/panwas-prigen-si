@@ -1,6 +1,7 @@
 import "./bootstrap";
 import "../css/app.css";
 import "vue3-easy-data-table/dist/style.css";
+import "vue3-json-viewer/dist/index.css";
 
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
@@ -8,6 +9,7 @@ import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import Vue3EasyDataTable from "vue3-easy-data-table";
+import JsonViewer from "vue3-json-viewer";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText ||
@@ -23,7 +25,8 @@ createInertiaApp({
     setup({ el, app, props, plugin }) {
         const vue = createApp({ render: () => h(app, props) })
             .use(plugin)
-            .use(ZiggyVue, Ziggy);
+            .use(ZiggyVue, Ziggy)
+            .use(JsonViewer);
         vue.component("EasyDataTable", Vue3EasyDataTable);
 
         return vue.mount(el);

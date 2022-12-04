@@ -21,7 +21,7 @@ const emit = defineEmits(["submit"]);
             <slot name="title" />
         </template>
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-8 sm:col-span-4">
                 <InputLabel for="name" value="Name" />
                 <TextInput
                     id="name"
@@ -33,7 +33,7 @@ const emit = defineEmits(["submit"]);
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-8 sm:col-span-4">
                 <InputLabel for="email" value="Email" />
                 <TextInput
                     id="email"
@@ -45,7 +45,7 @@ const emit = defineEmits(["submit"]);
                 <InputError :message="form.errors.email" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-8 sm:col-span-4">
                 <InputLabel for="password" value="New Password" />
                 <TextInput
                     id="password"
@@ -58,7 +58,7 @@ const emit = defineEmits(["submit"]);
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-8 sm:col-span-4">
                 <InputLabel
                     for="password_confirmation"
                     value="Confirm Password"
@@ -82,7 +82,7 @@ const emit = defineEmits(["submit"]);
                 <ActionMessage :on="form.recentlySuccessful" class="mr-3">
                     Saved.
                 </ActionMessage>
-                <Link :href="route('administration.users.index')">
+                <Link :href="route('administration.users.index')" replace>
                     <SecondaryButton
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"

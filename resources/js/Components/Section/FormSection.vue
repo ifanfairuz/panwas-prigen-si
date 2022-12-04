@@ -29,7 +29,7 @@ const hasActions = computed(() => !!useSlots().actions);
                 </template>
             </SectionTitle>
             <hr class="my-2" />
-            <div class="grid grid-cols-6 gap-6">
+            <div class="grid grid-cols-4 gap-6">
                 <slot name="form" />
             </div>
         </div>

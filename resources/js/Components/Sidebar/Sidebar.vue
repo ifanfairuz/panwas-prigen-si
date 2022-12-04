@@ -124,6 +124,13 @@ const setShow = (v) => (show.value = v);
                             <i class="fas fa-users mr-2 text-sm"></i>
                             Users
                         </NavLink>
+                        <NavLink
+                            :href="route('administration.config.index')"
+                            :active="route().current('administration.config.*')"
+                        >
+                            <i class="fas fa-gear mr-2 text-sm"></i>
+                            Setting
+                        </NavLink>
                     </ul>
                 </template>
             </div>
