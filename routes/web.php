@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\SuratMasukController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -29,16 +31,22 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // file
+    Route::name('file.')->prefix('file')->group(function () {
+        Route::get('/view', [FileController::class, 'view'])->name('view');
+        Route::get('/download', [FileController::class, 'download'])->name('download');
+    });
+
     // administration
     Route::middleware(['isadministrator'])->name('administration.')->prefix('administration')->group(function () {
-        Route::name('config.')->prefix('config')->group(function (){
+        Route::name('config.')->prefix('config')->group(function () {
             Route::get('/', [ConfigController::class, 'index'])->name('index');
-            Route::name('dropbox.')->prefix('dropbox')->group(function (){
+            Route::name('dropbox.')->prefix('dropbox')->group(function () {
                 Route::get('/get-access', [ConfigController::class, 'dropbox_getaccess'])->name('getaccess');
                 Route::get('/granted', [ConfigController::class, 'dropbox_granted'])->name('granted');
             });
         });
-        Route::name('users.')->prefix('users')->group(function (){
+        Route::name('users.')->prefix('users')->group(function () {
             Route::get('/', [UsersController::class, 'index'])->name('index');
             Route::get('/add', [UsersController::class, 'add'])->name('add');
             Route::post('/add', [UsersController::class, 'create'])->name('create');
@@ -49,7 +57,7 @@ Route::middleware([
     });
 
     // surat masuk
-    Route::name('surat.masuk.')->prefix('surat-masuk')->group(function (){
+    Route::name('surat.masuk.')->prefix('surat-masuk')->group(function () {
         Route::get('/', [SuratMasukController::class, 'index'])->name('index');
         Route::get('/view/{id}', [SuratMasukController::class, 'view'])->name('view');
         Route::get('/add', [SuratMasukController::class, 'add'])->name('add');
@@ -60,9 +68,15 @@ Route::middleware([
     });
 
     // surat keluar
-    Route::get('/surat-keluar', function () {
-        return Inertia::render('Dashboard');
-    })->name('surat.keluar.index');
+    Route::name('surat.keluar.')->prefix('surat-keluar')->group(function () {
+        Route::get('/', [SuratKeluarController::class, 'index'])->name('index');
+        Route::get('/view/{id}', [SuratKeluarController::class, 'view'])->name('view');
+        Route::get('/add', [SuratKeluarController::class, 'add'])->name('add');
+        Route::post('/add', [SuratKeluarController::class, 'create'])->name('create');
+        Route::get('/edit/{id}', [SuratKeluarController::class, 'edit'])->name('edit');
+        Route::put('/edit/{id}', [SuratKeluarController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [SuratKeluarController::class, 'delete'])->name('delete');
+    });
 
     // keuangan
     Route::get('/keuangan', function () {

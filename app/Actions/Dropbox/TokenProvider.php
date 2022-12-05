@@ -8,7 +8,8 @@ use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Http;
 use Spatie\Dropbox\TokenProvider as Provider;
 
-class TokenProvider implements Provider {
+class TokenProvider implements Provider
+{
 
     protected $key;
     protected $secret;
@@ -18,7 +19,8 @@ class TokenProvider implements Provider {
      */
     protected $token;
 
-    public function __construct($key, $secret) {
+    public function __construct($key, $secret)
+    {
         $this->key = $key;
         $this->secret = $secret;
         $this->token = Config::getConfig('dropbox_token');
@@ -33,13 +35,13 @@ class TokenProvider implements Provider {
 
         $code = $this->token->asObject()->auth_code;
         $response = Http::withBasicAuth($this->key, $this->secret)
-        ->asForm()
-        ->acceptJson()
-        ->post('https://api.dropboxapi.com/oauth2/token', [
-            'code' => $code,
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => route('administration.config.dropbox.granted'),
-        ]);
+            ->asForm()
+            ->acceptJson()
+            ->post('https://api.dropboxapi.com/oauth2/token', [
+                'code' => $code,
+                'grant_type' => 'authorization_code',
+                'redirect_uri' => route('administration.config.dropbox.granted'),
+            ]);
         if ($response->successful()) {
             $data = json_decode($response->body(), true);
             $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->toISOString();
@@ -63,7 +65,7 @@ class TokenProvider implements Provider {
             if (now()->isBefore($data->expires_on)) {
                 return $data->access_token;
             }
-            
+
             $this->refreshToken();
             return $this->token->asObject()->access_token;
         }
@@ -83,13 +85,13 @@ class TokenProvider implements Provider {
         }
 
         $response = Http::withBasicAuth($this->key, $this->secret)
-        ->asForm()
-        ->acceptJson()
-        ->post('https://api.dropboxapi.com/oauth2/token', [
-            'refresh_token' => $refresh_token,
-            'grant_type' => 'refresh_token',
-            'redirect_uri' => route('administration.config.dropbox.granted'),
-        ]);
+            ->asForm()
+            ->acceptJson()
+            ->post('https://api.dropboxapi.com/oauth2/token', [
+                'refresh_token' => $refresh_token,
+                'grant_type' => 'refresh_token',
+                'redirect_uri' => route('administration.config.dropbox.granted'),
+            ]);
         if ($response->successful()) {
             $data = json_decode($response->body(), true);
             $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->toISOString();
@@ -132,6 +134,7 @@ class TokenProvider implements Provider {
             $provider->getTokenFromCode();
             return true;
         } catch (Exception $exception) {
+            dd($exception);
             return false;
         }
     }

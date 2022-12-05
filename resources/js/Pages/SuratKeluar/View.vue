@@ -12,18 +12,18 @@ const props = defineProps({
 </script>
 
 <template>
-    <AppLayout title="Surat Masuk">
-        <template #header> Surat Masuk </template>
+    <AppLayout title="Surat Keluar">
+        <template #header> Surat Keluar </template>
 
         <div class="py-8 max-w-3xl mx-auto">
             <ActionSection>
-                <template #title>Detail Surat Masuk</template>
+                <template #title>Detail Surat Keluar</template>
                 <template #description>
-                    Detail Surat Masuk yang diterima Panwascam Prigen
+                    Detail Surat Keluar yang diterima Panwascam Prigen
                 </template>
                 <template #aside>
                     <div class="h-full flex items-center">
-                        <Link :href="route('surat.masuk.index')" replace>
+                        <Link :href="route('surat.keluar.index')" replace>
                             <SecondaryButton>
                                 <i class="fa fa-times"></i>
                             </SecondaryButton>
@@ -38,7 +38,7 @@ const props = defineProps({
                                 :value="data.nomor"
                             />
                             <DescriptionItem
-                                label="Masuk"
+                                label="Keluar"
                                 :value="data.tanggal"
                             />
                             <DescriptionItem label="Dari" :value="data.dari" />

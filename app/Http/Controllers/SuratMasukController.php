@@ -19,10 +19,11 @@ class SuratMasukController extends Controller
      */
     protected $dropbox;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dropbox = app(DropboxAction::class, ['context' => 'surat_masuk']);
     }
-    
+
     /**
      * surat masuk page
      * @param \Illuminate\Http\Request $request
@@ -87,7 +88,7 @@ class SuratMasukController extends Controller
                 'keterangan' => ['nullable', 'string'],
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
             ])->validate();
-            
+
             DB::transaction(function () use ($input) {
                 return tap(SuratMasuk::create($input), function (SuratMasuk $s) use ($input) {
                     if (@$input['doc']) {
@@ -150,7 +151,7 @@ class SuratMasukController extends Controller
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
             ])->validate();
             $model = SuratMasuk::findOrFail($id);
-            
+
             $update = [
                 'nomor' => $input['nomor'],
                 'tanggal' => $input['tanggal'],
@@ -166,7 +167,7 @@ class SuratMasukController extends Controller
                         $old_file = $s->doc;
                         $path = $this->dropbox->upload($input['doc']);
                         $saved = $s->forceFill(['doc' => $path])->save();
-                        if ($old_file && $saved) $this->dropbox->delete($old_file);
+                        if ($old_file && $saved) DropboxAction::deleteFile($old_file);
                     }
                 });
             });
@@ -196,7 +197,7 @@ class SuratMasukController extends Controller
             $model = SuratMasuk::findOrFail($id);
             DB::transaction(function () use ($model) {
                 return tap($model->delete() ? $model : $model, function (SuratMasuk $s) {
-                    if ($s->doc) $this->dropbox->delete($s->doc);
+                    if ($s->doc) DropboxAction::deleteFile($s->doc);
                 });
             });
 

@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "ifanfairuz/panwas-prigen-si",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "Sistem Informasi Panwascam Prigen.",
+    "keywords": ["panwas", "panwascam", "prigen", "sistem informasi"],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
