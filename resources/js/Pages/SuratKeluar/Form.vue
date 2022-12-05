@@ -63,14 +63,14 @@ onMounted(() => {
                     <InputError :message="form.errors.tanggal" class="mt-2" />
                 </div>
                 <div class="col-span-8 sm:col-span-4">
-                    <InputLabel for="dari" value="Surat Dari" />
+                    <InputLabel for="tujuan" value="Tujuan Surat" />
                     <TextInput
-                        id="dari"
-                        v-model="form.dari"
+                        id="tujuan"
+                        v-model="form.tujuan"
                         type="text"
                         class="mt-1 block w-full"
                     />
-                    <InputError :message="form.errors.dari" class="mt-2" />
+                    <InputError :message="form.errors.tujuan" class="mt-2" />
                 </div>
                 <div class="col-span-8 sm:col-span-4">
                     <InputLabel for="alamat" value="Alamat" />

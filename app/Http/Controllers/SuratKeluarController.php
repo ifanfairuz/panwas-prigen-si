@@ -77,11 +77,11 @@ class SuratKeluarController extends Controller
     public function create(Request $request)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->only(['nomor', 'tanggal', 'tujuan', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
             Validator::make($input, [
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
-                'dari' => ['required', 'string', 'max:255'],
+                'tujuan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string', 'max:255'],
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
@@ -139,11 +139,11 @@ class SuratKeluarController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->only(['nomor', 'tanggal', 'tujuan', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
             Validator::make($input, [
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
-                'dari' => ['required', 'string', 'max:255'],
+                'tujuan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string', 'max:255'],
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
@@ -155,7 +155,7 @@ class SuratKeluarController extends Controller
             $update = [
                 'nomor' => $input['nomor'],
                 'tanggal' => $input['tanggal'],
-                'dari' => $input['dari'],
+                'tujuan' => $input['tujuan'],
                 'alamat' => $input['alamat'],
                 'perihal' => $input['perihal'],
                 'tempat' => $input['tempat'],

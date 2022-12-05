@@ -27,7 +27,7 @@ class DropboxAction
     public function upload(UploadedFile $file, $name = null)
     {
         if (!$name) $name = md5($this->context . time());
-        $filename = trim(Str::replace(['/', '\\'], ['-', '-'], $name));
+        $filename = self::nameEncode($name);
         $filename = "{$filename}.{$file->getClientOriginalExtension()}";
         $path = $this->context && $this->context !== '' ? "{$this->context}/{$filename}" : $filename;
         $this->disk()->write($path, file_get_contents($file->getRealPath()));
@@ -42,6 +42,15 @@ class DropboxAction
     {
         $path = $this->context && $this->context !== '' ? "{$this->context}/{$path}" : $path;
         return $this->disk()->delete($path);
+    }
+
+    /**
+     * name encode file
+     * @return bool
+     */
+    public static function nameEncode($name)
+    {
+        return trim(Str::replace(['/', '\\'], ['-', '-'], $name));
     }
 
     /**

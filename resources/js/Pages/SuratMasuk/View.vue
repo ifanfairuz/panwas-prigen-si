@@ -61,6 +61,7 @@ const props = defineProps({
                             <DescriptionItemFile
                                 label="Dokumen"
                                 provider="dropbox"
+                                :filename="`${data.dari} - ${data.nomor}`"
                                 :value="data.doc"
                             />
                         </dl>

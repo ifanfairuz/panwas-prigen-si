@@ -9,7 +9,7 @@ const formComp = ref(null);
 const form = useForm({
     nomor: "",
     tanggal: DateTime.now().toISODate(),
-    dari: "",
+    tujuan: "",
     alamat: "",
     perihal: "",
     tempat: "",

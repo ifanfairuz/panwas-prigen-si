@@ -8,10 +8,15 @@ const props = defineProps({
     label: String,
     value: Object,
     provider: String,
+    filename: String,
 });
 
 const query = computed(() =>
-    qs.stringify({ provider: props.provider, path: props.value })
+    qs.stringify({
+        provider: props.provider,
+        path: props.value,
+        filename: props.filename,
+    })
 );
 const basename = (path = "") => path.split("/").pop();
 

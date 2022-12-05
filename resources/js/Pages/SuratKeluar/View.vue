@@ -41,7 +41,10 @@ const props = defineProps({
                                 label="Keluar"
                                 :value="data.tanggal"
                             />
-                            <DescriptionItem label="Dari" :value="data.dari" />
+                            <DescriptionItem
+                                label="Tujuan"
+                                :value="data.tujuan"
+                            />
                             <DescriptionItem
                                 label="Alamat"
                                 :value="data.alamat"
@@ -61,6 +64,7 @@ const props = defineProps({
                             <DescriptionItemFile
                                 label="Dokumen"
                                 provider="dropbox"
+                                :filename="`${data.tujuan} - ${data.nomor}`"
                                 :value="data.doc"
                             />
                         </dl>

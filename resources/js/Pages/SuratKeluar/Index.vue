@@ -17,7 +17,7 @@ const columns = [
     { text: "ID", value: "id", sortable: true },
     { text: "Tanggal", value: "tanggal", sortable: true },
     { text: "Nomor", value: "nomor", sortable: true },
-    { text: "Dari", value: "dari", sortable: true },
+    { text: "Tujuan", value: "tujuan", sortable: true },
     { text: "Perihal", value: "perihal", sortable: true },
     { text: "Action", value: "action", sortable: false, searchable: false },
 ];

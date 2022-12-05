@@ -12,7 +12,7 @@ const formComp = ref(null);
 const form = useForm({
     nomor: props.data.nomor,
     tanggal: DateTime.fromISO(props.data.tanggal).toISODate(),
-    dari: props.data.dari,
+    tujuan: props.data.tujuan,
     alamat: props.data.alamat,
     perihal: props.data.perihal,
     tempat: props.data.tempat,
