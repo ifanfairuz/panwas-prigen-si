@@ -22,7 +22,6 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -43,10 +42,7 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            dd($e);
-        });
-        $this->renderable(function (Throwable $e) {
+        $this->reportable(function (\Exception $e) {
             dd($e);
         });
     }
