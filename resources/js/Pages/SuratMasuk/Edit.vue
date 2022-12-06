@@ -21,16 +21,13 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route("surat.masuk.update", props.data.id), {
+    form.post(route("surat.masuk.update", props.data.id), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
         },
         onProgress: (e) => {
             formComp.value.setProgress(e.percentage);
-        },
-        onFinish: () => {
-            formComp.value.setProgress(100);
         },
     });
 };
@@ -45,7 +42,7 @@ const submit = () => {
                 ref="formComp"
                 :form="form"
                 :old_file="data.doc || null"
-                @fileChange="form.doc = $event"
+                @change:file="form.doc = $event"
                 @submit="submit"
             >
                 <template #title>Ubah Surat Masuk</template>

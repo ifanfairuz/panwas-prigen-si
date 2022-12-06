@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from "vue";
 import { Link, useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ActionSection from "@/Components/Section/ActionSection.vue";
@@ -8,18 +7,16 @@ import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
 import ConfirmationModal from "@/Components/Modal/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 import DangerButton from "@/Components/Button/DangerButton.vue";
-import { types } from "@/lib/support";
+import { ref } from "vue";
 
 defineProps({
     datas: Array,
 });
 
 const columns = [
-    { text: "Tanggal", value: "tanggal", sortable: true },
-    { text: "Tipe", value: "type", sortable: true },
-    { text: "Nomor", value: "nomor", sortable: true },
-    { text: "Tujuan", value: "tujuan", sortable: true },
-    { text: "Perihal", value: "perihal", sortable: true },
+    { text: "ID", value: "id", sortable: true },
+    { text: "Nama", value: "nama", sortable: true },
+    { text: "Jabatan", value: "jabatan", sortable: true },
     { text: "Action", value: "action", sortable: false, searchable: false },
 ];
 const deletion = ref(null);
@@ -29,64 +26,51 @@ const tryDelete = (id) => {
     deletion.value = id;
 };
 
-const deleteData = () => {
-    form.delete(route("surat.keluar.delete", deletion.value), {
-        errorBag: "deleteData",
+const deletePetugas = () => {
+    form.delete(route("petugas.delete", deletion.value), {
         onSuccess: () => (deletion.value = null),
     });
 };
 </script>
 
 <template>
-    <AppLayout title="Surat Keluar">
-        <template #header> Surat Keluar </template>
+    <AppLayout title="Petugas">
+        <template #header> Petugas </template>
 
         <div class="py-8">
             <ActionSection>
-                <template #title> Surat Keluar </template>
-                <template #description>
-                    Data Surat Keluar yang diterima Panwascam Prigen
-                </template>
+                <template #title> List Petugas </template>
                 <template #aside>
-                    <Link :href="route('surat.keluar.add')">
-                        <PrimaryButton> Tambah Surat Keluar </PrimaryButton>
+                    <Link :href="route('petugas.add')">
+                        <PrimaryButton> Add Petugas </PrimaryButton>
                     </Link>
                 </template>
                 <template #content>
-                    <DataTable :headers="columns" :items="datas" show-index>
+                    <DataTable :headers="columns" :items="datas">
                         <template #item-action="{ id }">
                             <div class="flex gap-2">
                                 <Link
-                                    :href="route('surat.keluar.view', id)"
-                                    class="hover:text-blue-500 px-1"
-                                >
-                                    <i class="fa fa-eye"></i>
-                                </Link>
-                                <Link
-                                    :href="route('surat.keluar.edit', id)"
-                                    class="hover:text-blue-500 px-1"
+                                    :href="route('petugas.edit', id)"
+                                    class="hover:text-blue-500"
                                 >
                                     <i class="fa fa-pencil"></i>
                                 </Link>
                                 <button
-                                    class="hover:text-red-500 px-1"
+                                    class="hover:text-red-500"
                                     @click="tryDelete(id)"
                                 >
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
                         </template>
-                        <template #item-type="{ type }">
-                            {{ types[type] || "" }}
-                        </template>
                     </DataTable>
                 </template>
             </ActionSection>
         </div>
 
-        <!-- Confirmation Modal -->
+        <!-- Delete Petugas Confirmation Modal -->
         <ConfirmationModal :show="!!deletion" @close="deletion = null">
-            <template #title> Hapus Surat Keluar </template>
+            <template #title> Delete Petugas </template>
 
             <template #content>
                 Apakah anda yakin ?, data yang telah dihapus tidak dapat
@@ -95,16 +79,16 @@ const deleteData = () => {
 
             <template #footer>
                 <SecondaryButton @click="deletion = null">
-                    Batal
+                    Cancel
                 </SecondaryButton>
 
                 <DangerButton
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                    @click="deleteData"
+                    @click="deletePetugas"
                 >
-                    Ya, Hapus
+                    Delete Petugas
                 </DangerButton>
             </template>
         </ConfirmationModal>

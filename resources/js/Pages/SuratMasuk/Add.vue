@@ -27,9 +27,6 @@ const submit = () => {
         onProgress: (e) => {
             formComp.value.setProgress(e.percentage);
         },
-        onFinish: () => {
-            formComp.value.setProgress(100);
-        },
     });
 };
 </script>
@@ -41,7 +38,7 @@ const submit = () => {
             <Form
                 ref="formComp"
                 :form="form"
-                @fileChange="form.doc = $event"
+                @change:file="form.doc = $event"
                 @submit="submit"
             >
                 <template #title>Tambah Surat Masuk</template>

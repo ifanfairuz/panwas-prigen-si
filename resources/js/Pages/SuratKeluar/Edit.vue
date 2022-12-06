@@ -1,15 +1,17 @@
 <script setup>
 import { ref } from "vue";
+import { DateTime } from "luxon";
 import { useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
-import { DateTime } from "luxon";
 
 const props = defineProps({
     data: Object,
 });
 const formComp = ref(null);
 const form = useForm({
+    urut: props.data.nomor.substring(0, 3),
+    type: props.data.type,
     nomor: props.data.nomor,
     tanggal: DateTime.fromISO(props.data.tanggal).toISODate(),
     tujuan: props.data.tujuan,
@@ -17,20 +19,22 @@ const form = useForm({
     perihal: props.data.perihal,
     tempat: props.data.tempat,
     keterangan: props.data.keterangan,
+    surat_masuk_id: props.data.surat_masuk_id || null,
     doc: null,
+    generated: null,
+    tanggal_dinas_start: props.data.tanggal_dinas_start,
+    tanggal_dinas_end: props.data.tanggal_dinas_end,
+    petugas_id: props.data.petugas_id || null,
 });
 
 const submit = () => {
-    form.put(route("surat.keluar.update", props.data.id), {
+    form.post(route("surat.keluar.update", props.data.id), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
         },
         onProgress: (e) => {
             formComp.value.setProgress(e.percentage);
-        },
-        onFinish: () => {
-            formComp.value.setProgress(100);
         },
     });
 };
@@ -43,9 +47,12 @@ const submit = () => {
         <div class="py-8">
             <Form
                 ref="formComp"
+                prefix="edit"
                 :form="form"
                 :old_file="data.doc || null"
-                @fileChange="form.doc = $event"
+                @change:file="form.doc = $event"
+                @change:nomor="form.nomor = $event"
+                @change:generated="form.generated = $event"
                 @submit="submit"
             >
                 <template #title>Ubah Surat Keluar</template>

@@ -17,11 +17,11 @@ const props = defineProps({
 });
 const files = ref([]);
 
-const emit = defineEmits(["submit", "fileChange"]);
+const emit = defineEmits(["submit", "change:file"]);
 const onChangeFile = (v) => {
     const f = v.length > 0 ? v[0] : null;
     files.value = f ? [f] : [];
-    emit("fileChange", f?.file);
+    emit("change:file", f?.file);
 };
 const setProgress = (progress) => {
     if (files.value.length > 0) files.value[0].progress = progress;
@@ -121,7 +121,7 @@ onMounted(() => {
                     <Dropzone
                         accept=".docx, .doc, .pdf"
                         v-model="files"
-                        @onChange="onChangeFile"
+                        @change="onChangeFile"
                     />
                     <InputError :message="form.errors.doc" class="mt-2" />
                 </div>

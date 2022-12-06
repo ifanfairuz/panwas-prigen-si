@@ -31,9 +31,9 @@ class SuratMasukController extends Controller
      */
     public function index(Request $request)
     {
-        $users = SuratMasuk::all();
+        $datas = SuratMasuk::orderBy('tanggal')->get();
         return Inertia::render('SuratMasuk/Index', [
-            'datas' => $users
+            'datas' => $datas
         ]);
     }
 
@@ -46,9 +46,9 @@ class SuratMasukController extends Controller
     public function view(Request $request, $id)
     {
         try {
-            $user = SuratMasuk::findOrFail($id);
+            $data = SuratMasuk::findOrFail($id);
             return Inertia::render('SuratMasuk/View', [
-                'data' => $user->toArray()
+                'data' => $data->toArray()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('surat.masuk.index');
@@ -121,9 +121,9 @@ class SuratMasukController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $user = SuratMasuk::findOrFail($id);
+            $data = SuratMasuk::findOrFail($id);
             return Inertia::render('SuratMasuk/Edit', [
-                'data' => $user->toArray()
+                'data' => $data->toArray()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('surat.masuk.index');

@@ -1,3 +1,5 @@
 *
 !public/
+!surat_keluar/
+!templates/
 !.gitignore

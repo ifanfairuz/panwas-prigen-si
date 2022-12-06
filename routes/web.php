@@ -3,6 +3,7 @@
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\SuratMasukController;
 use App\Http\Controllers\UsersController;
@@ -45,6 +46,9 @@ Route::middleware([
                 Route::get('/get-access', [ConfigController::class, 'dropbox_getaccess'])->name('getaccess');
                 Route::get('/granted', [ConfigController::class, 'dropbox_granted'])->name('granted');
             });
+            Route::name('template.')->prefix('template')->group(function () {
+                Route::post('/upload', [ConfigController::class, 'template_upload'])->name('upload');
+            });
         });
         Route::name('users.')->prefix('users')->group(function () {
             Route::get('/', [UsersController::class, 'index'])->name('index');
@@ -56,6 +60,16 @@ Route::middleware([
         });
     });
 
+    // petugas
+    Route::name('petugas.')->prefix('petugas')->group(function () {
+        Route::get('/', [PetugasController::class, 'index'])->name('index');
+        Route::get('/add', [PetugasController::class, 'add'])->name('add');
+        Route::post('/add', [PetugasController::class, 'create'])->name('create');
+        Route::get('/edit/{id}', [PetugasController::class, 'edit'])->name('edit');
+        Route::put('/edit/{id}', [PetugasController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [PetugasController::class, 'delete'])->name('delete');
+    });
+
     // surat masuk
     Route::name('surat.masuk.')->prefix('surat-masuk')->group(function () {
         Route::get('/', [SuratMasukController::class, 'index'])->name('index');
@@ -63,7 +77,7 @@ Route::middleware([
         Route::get('/add', [SuratMasukController::class, 'add'])->name('add');
         Route::post('/add', [SuratMasukController::class, 'create'])->name('create');
         Route::get('/edit/{id}', [SuratMasukController::class, 'edit'])->name('edit');
-        Route::put('/edit/{id}', [SuratMasukController::class, 'update'])->name('update');
+        Route::post('/edit/{id}', [SuratMasukController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [SuratMasukController::class, 'delete'])->name('delete');
     });
 
@@ -74,8 +88,9 @@ Route::middleware([
         Route::get('/add', [SuratKeluarController::class, 'add'])->name('add');
         Route::post('/add', [SuratKeluarController::class, 'create'])->name('create');
         Route::get('/edit/{id}', [SuratKeluarController::class, 'edit'])->name('edit');
-        Route::put('/edit/{id}', [SuratKeluarController::class, 'update'])->name('update');
+        Route::post('/edit/{id}', [SuratKeluarController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [SuratKeluarController::class, 'delete'])->name('delete');
+        Route::post('/generate', [SuratKeluarController::class, 'generate'])->name('generate');
     });
 
     // keuangan

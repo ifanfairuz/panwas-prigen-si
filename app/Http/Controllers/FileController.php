@@ -23,7 +23,7 @@ class FileController extends Controller
         switch ($provider) {
             case 'local':
                 $size = Storage::size($path);
-                return response()->file($path, [
+                return response()->file(Storage::path($path), [
                     'Content-Length' => $size,
                     'Content-Disposition' => 'inline; filename="' . $filename . '"',
                 ]);
@@ -57,7 +57,7 @@ class FileController extends Controller
         switch ($provider) {
             case 'local':
                 $size = Storage::size($path);
-                return response()->file($path, [
+                return response()->file(Storage::path($path), [
                     'Content-Length' => $size,
                     'Content-Disposition' => 'attachment; filename="' . $filename . '"'
                 ]);

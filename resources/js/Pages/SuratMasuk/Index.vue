@@ -14,7 +14,6 @@ defineProps({
 });
 
 const columns = [
-    { text: "ID", value: "id", sortable: true },
     { text: "Tanggal", value: "tanggal", sortable: true },
     { text: "Nomor", value: "nomor", sortable: true },
     { text: "Dari", value: "dari", sortable: true },
@@ -52,7 +51,7 @@ const deleteData = () => {
                     </Link>
                 </template>
                 <template #content>
-                    <DataTable :headers="columns" :items="datas">
+                    <DataTable :headers="columns" :items="datas" show-index>
                         <template #item-action="{ id }">
                             <div class="flex gap-2">
                                 <Link

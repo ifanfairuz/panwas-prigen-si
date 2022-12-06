@@ -75,6 +75,20 @@ const setShow = (v) => (show.value = v);
                 </ul>
 
                 <!-- Heading -->
+                <NavHead>Master</NavHead>
+
+                <!-- Navigation -->
+                <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+                    <NavLink
+                        :href="route('petugas.index')"
+                        :active="route().current('petugas.*')"
+                    >
+                        <i class="fas fa-users mr-2 text-sm"></i>
+                        Petugas
+                    </NavLink>
+                </ul>
+
+                <!-- Heading -->
                 <NavHead>Surat</NavHead>
 
                 <!-- Navigation -->

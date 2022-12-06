@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Document\DocumentManager;
 use App\Actions\Dropbox\DropboxAction;
+use App\Models\Petugas;
 use App\Models\SuratKeluar;
+use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use League\Flysystem\FilesystemException;
@@ -18,10 +22,35 @@ class SuratKeluarController extends Controller
      * @var \App\Actions\Dropbox\DropboxAction
      */
     protected $dropbox;
+    /**
+     * @var \App\Actions\Document\DocumentManager
+     */
+    protected $document;
 
     public function __construct()
     {
         $this->dropbox = app(DropboxAction::class, ['context' => 'surat_keluar']);
+        $this->document = app(DocumentManager::class, ['context' => 'surat_keluar']);
+    }
+
+    /**
+     * surat keluar page
+     * @param \Illuminate\Http\Request $request
+     * @return \Inertia\Response
+     */
+    public function generate(Request $request)
+    {
+        try {
+            $from = $request->input("from", "add");
+            $input = json_decode($request->input("param", "{}"), true);
+            $model = new SuratKeluar($input);
+            $filename = md5($input['nomor']).".docx";
+            $generated = $this->document->generateSuratKeluar($model, $filename);
+    
+            return back()->with('flash.generated', $generated);
+        } catch (\Exception $exception) {
+            return response()->redirectWithBanner("surat.keluar.{$from}", "Gagal generate dokumen - {$exception->getMessage()}");
+        }
     }
 
     /**
@@ -31,9 +60,9 @@ class SuratKeluarController extends Controller
      */
     public function index(Request $request)
     {
-        $users = SuratKeluar::all();
+        $datas = SuratKeluar::orderBy('nomor')->get();
         return Inertia::render('SuratKeluar/Index', [
-            'datas' => $users
+            'datas' => $datas
         ]);
     }
 
@@ -46,9 +75,9 @@ class SuratKeluarController extends Controller
     public function view(Request $request, $id)
     {
         try {
-            $user = SuratKeluar::findOrFail($id);
+            $data = SuratKeluar::with(['surat_masuk', 'petugas'])->findOrFail($id);
             return Inertia::render('SuratKeluar/View', [
-                'data' => $user->toArray()
+                'data' => $data->toArray()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('surat.keluar.index');
@@ -63,8 +92,23 @@ class SuratKeluarController extends Controller
     public function add(Request $request)
     {
         try {
-            return Inertia::render('SuratKeluar/Add');
+            $refid = $request->query('refid');
+            $type = $request->query('type');
+
+            $references = SuratMasuk::all();
+            $reference = SuratMasuk::find($refid);
+
+            $urut = SuratKeluar::getNextUrut();
+
+            return Inertia::render('SuratKeluar/Add', [
+                'petugas' => Petugas::all(),
+                'references' => $references,
+                'type' => $type,
+                'reference' => $reference ?? (object) [],
+                'urut' => $urut ?? ''
+            ]);
         } catch (\Exception $e) {
+            throw $e;
             return redirect()->route('surat.keluar.index');
         }
     }
@@ -77,16 +121,30 @@ class SuratKeluarController extends Controller
     public function create(Request $request)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'tujuan', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->all();
             Validator::make($input, [
+                'type' => ['required', 'string', 'max:255'],
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
+                'tanggal_dinas_start' => ['nullable', 'date'],
+                'tanggal_dinas_end' => ['nullable', 'date'],
                 'tujuan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string', 'max:255'],
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
                 'keterangan' => ['nullable', 'string'],
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
+                'surat_masuk_id' => [
+                    'nullable',
+                    'sometimes',
+                    Rule::unique('surat_keluar', 'surat_masuk_id'),
+                    Rule::exists('surat_masuk', 'id'),
+                ],
+                'petugas_id' => [
+                    'nullable',
+                    'sometimes',
+                    Rule::exists('petugas', 'id'),
+                ],
             ])->validate();
 
             DB::transaction(function () use ($input) {
@@ -121,9 +179,22 @@ class SuratKeluarController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $user = SuratKeluar::findOrFail($id);
+            $data = SuratKeluar::findOrFail($id);
+            $refid = $request->query('refid');
+            $type = $request->query('type');
+
+            $references = SuratMasuk::all();
+            $reference = SuratMasuk::find($refid);
+
+            $urut = SuratKeluar::getNextUrut();
+
             return Inertia::render('SuratKeluar/Edit', [
-                'data' => $user->toArray()
+                'petugas' => Petugas::all(),
+                'references' => $references,
+                'type' => $type,
+                'reference' => $reference ?? (object) [],
+                'urut' => $urut ?? '',
+                'data' => $data->toArray()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('surat.keluar.index');
@@ -139,22 +210,41 @@ class SuratKeluarController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'tujuan', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->all();
             Validator::make($input, [
+                'type' => ['required', 'string', 'max:255'],
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
+                'tanggal_dinas_start' => ['nullable', 'date'],
+                'tanggal_dinas_end' => ['nullable', 'date'],
                 'tujuan' => ['required', 'string', 'max:255'],
                 'alamat' => ['required', 'string', 'max:255'],
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
                 'keterangan' => ['nullable', 'string'],
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
+                'surat_masuk_id' => [
+                    'nullable',
+                    'sometimes',
+                    Rule::unique('surat_keluar', 'surat_masuk_id')->ignore($id),
+                    Rule::exists('surat_masuk', 'id'),
+                ],
+                'petugas_id' => [
+                    'nullable',
+                    'sometimes',
+                    Rule::exists('petugas', 'id'),
+                ],
             ])->validate();
             $model = SuratKeluar::findOrFail($id);
 
             $update = [
+                'petugas_id' => $input['petugas_id'],
+                'surat_masuk_id' => $input['surat_masuk_id'],
+                'type' => $input['type'],
                 'nomor' => $input['nomor'],
                 'tanggal' => $input['tanggal'],
+                'tanggal_dinas_start' => $input['tanggal_dinas_start'],
+                'tanggal_dinas_end' => $input['tanggal_dinas_end'],
                 'tujuan' => $input['tujuan'],
                 'alamat' => $input['alamat'],
                 'perihal' => $input['perihal'],

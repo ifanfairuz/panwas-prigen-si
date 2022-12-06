@@ -12,9 +12,9 @@
         "laravel/jetstream": "^2.12",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "phpoffice/phpword": "^1.0",
         "spatie/flysystem-dropbox": "^2.0",
-        "tightenco/ziggy": "^1.0",
-        "tinybutstrong/tinybutstrong": "^3.14"
+        "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -3,6 +3,7 @@
 namespace App\Actions\Dropbox;
 
 use App\Models\Config;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Http;
@@ -44,7 +45,7 @@ class TokenProvider implements Provider
             ]);
         if ($response->successful()) {
             $data = json_decode($response->body(), true);
-            $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->toISOString();
+            $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->format(Carbon::ISO8601);
             $this->token->mergeJson($data);
             return $data['access_token'];
         } else {
@@ -62,7 +63,7 @@ class TokenProvider implements Provider
 
         $data = $this->token->asObject();
         if (@$data->access_token && $data->access_token != '') {
-            if (now()->isBefore($data->expires_on)) {
+            if (now()->isBefore(Carbon::createFromFormat(Carbon::ISO8601, $data->expires_on))) {
                 return $data->access_token;
             }
 

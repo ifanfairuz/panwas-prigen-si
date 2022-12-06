@@ -1,8 +1,8 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ActionSection from "@/Components/Section/ActionSection.vue";
-import DescriptionItem from "@/Components/DescriptionItem.vue";
-import DescriptionItemFile from "@/Components/DescriptionItemFile.vue";
+import DescriptionItem from "@/Components/Description/DescriptionItem.vue";
+import DescriptionItemFile from "@/Components/Description/DescriptionItemFile.vue";
 import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 import { Link } from "@inertiajs/inertia-vue3";
 
@@ -33,6 +33,12 @@ const props = defineProps({
                 <template #content>
                     <div>
                         <dl>
+                            <DescriptionItem label="ID" :value="data.id" />
+                            <DescriptionItem label="Tipe" :value="data.type" />
+                            <DescriptionItem
+                                label="Berdasarkan Surat Masuk"
+                                :value="data.surat_masuk?.nomor"
+                            />
                             <DescriptionItem
                                 label="Nomor"
                                 :value="data.nomor"
@@ -56,6 +62,14 @@ const props = defineProps({
                             <DescriptionItem
                                 label="Tempat"
                                 :value="data.tempat"
+                            />
+                            <DescriptionItem
+                                label="Petugas"
+                                :value="data.petugas?.nama"
+                            />
+                            <DescriptionItem
+                                label="Tanggal Dinas"
+                                :value="data.range_dinas"
                             />
                             <DescriptionItem
                                 label="Keterangan"

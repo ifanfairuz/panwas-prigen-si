@@ -1,14 +1,20 @@
 <script setup>
+import { stringify } from "query-string";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ActionSection from "@/Components/Section/ActionSection.vue";
-import DescriptionItem from "@/Components/DescriptionItem.vue";
-import DescriptionItemFile from "@/Components/DescriptionItemFile.vue";
+import DescriptionItem from "@/Components/Description/DescriptionItem.vue";
+import DescriptionItemFile from "@/Components/Description/DescriptionItemFile.vue";
 import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 import { Link } from "@inertiajs/inertia-vue3";
+import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
 
 const props = defineProps({
     data: Object,
 });
+
+const action = (url, type) => {
+    return `${url}?${stringify({ refid: props.data?.id, type })}`;
+};
 </script>
 
 <template>
@@ -64,6 +70,50 @@ const props = defineProps({
                                 :filename="`${data.dari} - ${data.nomor}`"
                                 :value="data.doc"
                             />
+                            <DescriptionItem label="Aksi">
+                                <div class="grid gap-2">
+                                    <Link
+                                        :href="
+                                            route('surat.masuk.edit', data.id)
+                                        "
+                                    >
+                                        <PrimaryButton>
+                                            <i class="fa fa-pencil mr-1"></i>
+                                            Edit
+                                        </PrimaryButton>
+                                    </Link>
+                                    <Link
+                                        :href="
+                                            action(
+                                                route('surat.keluar.add'),
+                                                'tugas_panwas'
+                                            )
+                                        "
+                                    >
+                                        <PrimaryButton>
+                                            <i
+                                                class="fa fa-envelope-circle-check mr-1"
+                                            ></i>
+                                            Gen Surat Tugas
+                                        </PrimaryButton>
+                                    </Link>
+                                    <Link
+                                        :href="
+                                            action(
+                                                route('surat.keluar.add'),
+                                                'keluar_panwas'
+                                            )
+                                        "
+                                    >
+                                        <PrimaryButton>
+                                            <i
+                                                class="fa fa-envelope-circle-check mr-1"
+                                            ></i>
+                                            Gen Surat Keluar
+                                        </PrimaryButton>
+                                    </Link>
+                                </div>
+                            </DescriptionItem>
                         </dl>
                     </div>
                 </template>
