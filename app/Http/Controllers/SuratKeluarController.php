@@ -137,7 +137,6 @@ class SuratKeluarController extends Controller
                 'surat_masuk_id' => [
                     'nullable',
                     'sometimes',
-                    Rule::unique('surat_keluar', 'surat_masuk_id'),
                     Rule::exists('surat_masuk', 'id'),
                 ],
                 'petugas_id' => [
@@ -226,7 +225,6 @@ class SuratKeluarController extends Controller
                 'surat_masuk_id' => [
                     'nullable',
                     'sometimes',
-                    Rule::unique('surat_keluar', 'surat_masuk_id')->ignore($id),
                     Rule::exists('surat_masuk', 'id'),
                 ],
                 'petugas_id' => [
