@@ -53,7 +53,7 @@ class SuratKeluar extends Model
             if (!$model->petugas_id || $model->petugas_id == '') $model->petugas_id = 0; 
             if (
                 $model->tanggal_dinas_start &&
-                (!$model->$this->tanggal_dinas_end || $model->$this->tanggal_dinas_end == '')
+                (!$model->tanggal_dinas_end || $model->tanggal_dinas_end == '')
             ) $model->tanggal_dinas_end = $model->tanggal_dinas_start; 
         });
     }
