@@ -39,7 +39,7 @@ class DocumentManager
             $path = Storage::path($path);
             $outdir_abs = Storage::path($outdir);
             $command = "libreoffice --headless --convert-to pdf ${path} --outdir ${outdir_abs}";
-            $command = "type libreoffice &> /dev/null && { ${command} && echo \"DONE\"; exit 0; }  || { exit 1; }";
+            $command = "type libreoffice &> /dev/null && { ${command} && echo \"DONE\" && exit 0; }  || { exit 1; }";
             $result = shell_exec($command);
             if ($result && strpos("DONE", $result)) return join(DIRECTORY_SEPARATOR, [$outdir, pathinfo($path, PATHINFO_FILENAME) . ".pdf"]);
             throw new \Exception("Error - ${command}");
