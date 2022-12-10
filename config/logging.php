@@ -75,7 +75,7 @@ return [
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
-            'level' => env('LOG_LEVEL', 'critical'),
+            'level' => env('LOG_LEVEL', 'debug'),
         ],
 
         'papertrail' => [
@@ -94,6 +94,9 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
             'formatter' => env('LOG_STDERR_FORMATTER'),
+            'formatter_with' => [
+                'includeStacktraces' => true,
+            ],
             'with' => [
                 'stream' => 'php://stderr',
             ],

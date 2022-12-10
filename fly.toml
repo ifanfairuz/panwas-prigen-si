@@ -21,6 +21,8 @@ processes = []
   MAIL_ENCRYPTION = "ssl"
   MAIL_FROM_ADDRESS = "prigen.panwascam2024@gmail.com"
   MAIL_FROM_NAME = "SI Panwascam Prigen"
+  LOG_CHANNEL = "stderr"
+  LOG_LEVEL = "debug"
 
 [deploy]
   release_command = "php /var/www/html/artisan migrate --force"

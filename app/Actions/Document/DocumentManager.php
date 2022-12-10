@@ -4,6 +4,7 @@ namespace App\Actions\Document;
 
 use App\Actions\HasDateHelper;
 use App\Models\Petugas;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
 
@@ -18,7 +19,7 @@ class DocumentManager
      */
     public function getPetugases($ids)
     {
-        return count($ids) == 0 ? collect([]) : Petugas::whereIn('id', $ids)->get();
+        return count($ids ?? []) == 0 ? collect([]) : Petugas::whereIn('id', $ids)->get();
     }
 
     /**
@@ -30,17 +31,20 @@ class DocumentManager
     public function converDocxToPdf($path, $outdir = '')
     {
         try {
-            if (!file_exists($path)) throw new \Exception("File not found");
+            if (!Storage::exists($path)) throw new \Exception("File not found");
             if (!$outdir || $outdir == '') {
-                $outdir = "generated/" . pathinfo($path, PATHINFO_BASENAME);
-                Storage::mkdir($outdir);
-                $outdir = Storage::path($outdir);
+                $outdir = "generated/" . pathinfo($path, PATHINFO_FILENAME);
+                Storage::makeDirectory($outdir);
             }
-            $command = "libreoffice --headless --convert-to pdf ${$path} --outdir ${$outdir}";
-            $result = shell_exec("type libreoffice &> /dev/null && { ${$command} &> /dev/null; echo \"done\"; exit 0; }  || { exit 1; }");
-            if ($result == "done") return join(DIRECTORY_SEPARATOR, [$outdir, pathinfo($path, PATHINFO_BASENAME) . ".pdf"]);
-            throw new \Exception("Error");
+            $path = Storage::path($path);
+            $outdir_abs = Storage::path($outdir);
+            $command = "libreoffice --headless --convert-to pdf ${path} --outdir ${outdir_abs}";
+            $command = "type libreoffice &> /dev/null && { ${command} && echo \"DONE\"; exit 0; }  || { exit 1; }";
+            $result = shell_exec($command);
+            if ($result && strpos("DONE", $result)) return join(DIRECTORY_SEPARATOR, [$outdir, pathinfo($path, PATHINFO_FILENAME) . ".pdf"]);
+            throw new \Exception("Error - ${command}");
         } catch (\Exception $e) {
+            Log::error($e);
             return null;
         }
     }
