@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -21,8 +22,7 @@ class Handler extends ExceptionHandler
      *
      * @var array<int, class-string<\Throwable>>
      */
-    protected $dontReport = [
-    ];
+    protected $dontReport = [];
 
     /**
      * A list of the inputs that are never flashed to the session on validation exceptions.
@@ -44,6 +44,10 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (\Exception $e) {
             dd($e);
+        });
+
+        $this->renderable(function (\Exception $e) {
+            Log::error($e->getMessage(), [$e]);
         });
     }
 }
