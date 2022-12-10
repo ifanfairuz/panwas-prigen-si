@@ -65,7 +65,9 @@ const props = defineProps({
                             />
                             <DescriptionItem
                                 label="Petugas"
-                                :value="data.petugas?.nama"
+                                :value="data.petugases"
+                                :key-extractor="(v) => v.id"
+                                :value-extractor="(v) => v.nama"
                             />
                             <DescriptionItem
                                 label="Tanggal Dinas"

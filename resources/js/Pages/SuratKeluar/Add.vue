@@ -31,7 +31,7 @@ const form = useForm({
     generated: null,
     tanggal_dinas_start: null,
     tanggal_dinas_end: null,
-    petugas_id: null,
+    petugases_id: null,
 });
 
 const submit = () => {

@@ -44,9 +44,12 @@ class SuratKeluarController extends Controller
             $from = $request->input("from", "add");
             $input = json_decode($request->input("param", "{}"), true);
             $model = new SuratKeluar($input);
-            $filename = md5($input['nomor']).".docx";
+            $filename = md5($input['nomor']) . ".docx";
+            if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
+                $model->petugases_id = $input['petugases_id'];
+            }
             $generated = $this->document->generateSuratKeluar($model, $filename);
-    
+
             return back()->with('flash.generated', $generated);
         } catch (\Exception $exception) {
             return response()->redirectWithBanner("surat.keluar.{$from}", "Gagal generate dokumen - {$exception->getMessage()}");
@@ -75,7 +78,7 @@ class SuratKeluarController extends Controller
     public function view(Request $request, $id)
     {
         try {
-            $data = SuratKeluar::with(['surat_masuk', 'petugas'])->findOrFail($id);
+            $data = SuratKeluar::with(['surat_masuk', 'petugases'])->findOrFail($id);
             return Inertia::render('SuratKeluar/View', [
                 'data' => $data->toArray()
             ]);
@@ -101,7 +104,7 @@ class SuratKeluarController extends Controller
             $urut = SuratKeluar::getNextUrut();
 
             return Inertia::render('SuratKeluar/Add', [
-                'petugas' => Petugas::all(),
+                'petugases' => Petugas::all(),
                 'references' => $references,
                 'type' => $type,
                 'reference' => $reference ?? (object) [],
@@ -139,15 +142,19 @@ class SuratKeluarController extends Controller
                     'sometimes',
                     Rule::exists('surat_masuk', 'id'),
                 ],
-                'petugas_id' => [
+                'petugases_id' => [
                     'nullable',
                     'sometimes',
+                    'array',
                     Rule::exists('petugas', 'id'),
                 ],
             ])->validate();
 
             DB::transaction(function () use ($input) {
                 return tap(SuratKeluar::create($input), function (SuratKeluar $s) use ($input) {
+                    if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
+                        $s->petugases()->sync($input['petugases_id']);
+                    }
                     if (@$input['doc']) {
                         $path = $this->dropbox->upload($input['doc']);
                         $s->forceFill(['doc' => $path])->save();
@@ -178,7 +185,7 @@ class SuratKeluarController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $data = SuratKeluar::findOrFail($id);
+            $data = SuratKeluar::with(['surat_masuk', 'petugases'])->findOrFail($id);
             $refid = $request->query('refid');
             $type = $request->query('type');
 
@@ -188,7 +195,7 @@ class SuratKeluarController extends Controller
             $urut = SuratKeluar::getNextUrut();
 
             return Inertia::render('SuratKeluar/Edit', [
-                'petugas' => Petugas::all(),
+                'petugases' => Petugas::all(),
                 'references' => $references,
                 'type' => $type,
                 'reference' => $reference ?? (object) [],
@@ -227,16 +234,16 @@ class SuratKeluarController extends Controller
                     'sometimes',
                     Rule::exists('surat_masuk', 'id'),
                 ],
-                'petugas_id' => [
+                'petugases_id' => [
                     'nullable',
                     'sometimes',
+                    'array',
                     Rule::exists('petugas', 'id'),
                 ],
             ])->validate();
             $model = SuratKeluar::findOrFail($id);
 
             $update = [
-                'petugas_id' => $input['petugas_id'],
                 'surat_masuk_id' => $input['surat_masuk_id'],
                 'type' => $input['type'],
                 'nomor' => $input['nomor'],
@@ -251,6 +258,9 @@ class SuratKeluarController extends Controller
             ];
             DB::transaction(function () use ($model, $update, $input) {
                 return tap($model->forceFill($update)->save() ? $model : $model, function (SuratKeluar $s) use ($input) {
+                    if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
+                        $s->petugases()->sync($input['petugases_id']);
+                    }
                     if (@$input['doc']) {
                         $old_file = $s->doc;
                         $path = $this->dropbox->upload($input['doc']);

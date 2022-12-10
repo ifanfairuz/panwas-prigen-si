@@ -45,16 +45,24 @@ class SuratKeluar extends Model
         'doc'
     ];
 
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'petugas_id' => 0,
+    ];
+
     protected static function boot()
     {
         parent::boot();
         static::saving(function ($model) {
-            if (!$model->surat_masuk_id || $model->surat_masuk_id == '') $model->surat_masuk_id = 0; 
-            if (!$model->petugas_id || $model->petugas_id == '') $model->petugas_id = 0; 
+            if (!$model->surat_masuk_id || $model->surat_masuk_id == '') $model->surat_masuk_id = 0;
             if (
                 $model->tanggal_dinas_start &&
                 (!$model->tanggal_dinas_end || $model->tanggal_dinas_end == '')
-            ) $model->tanggal_dinas_end = $model->tanggal_dinas_start; 
+            ) $model->tanggal_dinas_end = $model->tanggal_dinas_start;
         });
     }
 
@@ -106,5 +114,10 @@ class SuratKeluar extends Model
     public function petugas()
     {
         return $this->belongsTo(Petugas::class, 'petugas_id');
+    }
+
+    public function petugases()
+    {
+        return $this->belongsToMany(Petugas::class);
     }
 }

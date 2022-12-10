@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, useAttrs, onMounted } from "vue";
+import { ref, computed, useAttrs, onMounted, onUnmounted } from "vue";
 
 const { headers } = useAttrs();
 const inputComp = ref(null);
@@ -18,6 +18,9 @@ const focusSearch = (e) => {
 onMounted(() => {
     window.removeEventListener("keydown", focusSearch);
     window.addEventListener("keydown", focusSearch);
+});
+onUnmounted(() => {
+    window.removeEventListener("keydown", focusSearch);
 });
 </script>
 

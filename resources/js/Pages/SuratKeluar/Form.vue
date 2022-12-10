@@ -21,7 +21,7 @@ const props = defineProps({
     old_file: String,
 });
 const references = usePage().props.value.references;
-const list_petugas = usePage().props.value.petugas;
+const petugases = usePage().props.value.petugases;
 const files = ref([]);
 
 const emit = defineEmits([
@@ -188,13 +188,14 @@ defineExpose({ setProgress });
                     <InputError :message="form.errors.tempat" class="mt-2" />
                 </div>
                 <div class="col-span-8 sm:col-span-4">
-                    <InputLabel for="petugas_id" value="Petugas" />
+                    <InputLabel for="petugases_id" value="Petugas" />
                     <SelectInput
-                        id="petugas_id"
-                        v-model="form.petugas_id"
+                        multiple
+                        id="petugases_id"
+                        v-model="form.petugases_id"
                         class="mt-1 block w-full"
                         label="nama"
-                        :options="list_petugas"
+                        :options="petugases"
                         :reduce="(o) => o.id"
                         placeholder="Petugas"
                     >
@@ -203,7 +204,7 @@ defineExpose({ setProgress });
                         </template>
                     </SelectInput>
                     <InputError
-                        :message="form.errors.petugas_id"
+                        :message="form.errors.petugases_id"
                         class="mt-2"
                     />
                 </div>

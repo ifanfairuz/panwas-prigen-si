@@ -24,7 +24,7 @@ const form = useForm({
     generated: null,
     tanggal_dinas_start: props.data.tanggal_dinas_start,
     tanggal_dinas_end: props.data.tanggal_dinas_end,
-    petugas_id: props.data.petugas_id || null,
+    petugases_id: props.data.petugases.map((p) => p.id) || null,
 });
 
 const submit = () => {
