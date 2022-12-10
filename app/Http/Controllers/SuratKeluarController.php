@@ -54,6 +54,7 @@ class SuratKeluarController extends Controller
 
             return back()->with('flash.generated_doc', $generated_doc)->with('flash.generated_pdf', $generated_pdf);
         } catch (\Exception $exception) {
+            dd($exception);
             return response()->redirectWithBanner("surat.keluar.{$from}", "Gagal generate dokumen - {$exception->getMessage()}");
         }
     }
