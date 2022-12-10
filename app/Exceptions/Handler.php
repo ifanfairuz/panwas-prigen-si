@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (\Exception $e) {
-            Log::error($e->getMessage(), [$e]);
+            Log::info($e->getMessage(), [$e]);
         });
     }
 }
