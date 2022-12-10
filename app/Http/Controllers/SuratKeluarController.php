@@ -9,6 +9,7 @@ use App\Models\SuratKeluar;
 use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -48,9 +49,10 @@ class SuratKeluarController extends Controller
             if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
                 $model->petugases_id = $input['petugases_id'];
             }
-            $generated = $this->document->generateSuratKeluar($model, $filename);
+            $generated_doc = $this->document->generateSuratKeluar($model, $filename);
+            $generated_pdf = $this->document->converDocxToPdf($generated_doc);
 
-            return back()->with('flash.generated', $generated);
+            return back()->with('flash.generated_doc', $generated_doc)->with('flash.generated_pdf', $generated_pdf);
         } catch (\Exception $exception) {
             return response()->redirectWithBanner("surat.keluar.{$from}", "Gagal generate dokumen - {$exception->getMessage()}");
         }
@@ -158,6 +160,14 @@ class SuratKeluarController extends Controller
                     if (@$input['doc']) {
                         $path = $this->dropbox->upload($input['doc']);
                         $s->forceFill(['doc' => $path])->save();
+                    } elseif (@$input['generated_pdf'] && Storage::exists($input['generated_pdf'])) {
+                        $path = $this->dropbox->upload($input['generated_pdf']);
+                        $s->forceFill(['doc' => $path])->save();
+                        Storage::deleteDirectory(pathinfo($input['generated_pdf'], PATHINFO_DIRNAME));
+                    } elseif (@$input['generated_doc'] && Storage::exists($input['generated_doc'])) {
+                        $path = $this->dropbox->upload($input['generated_doc']);
+                        $s->forceFill(['doc' => $path])->save();
+                        Storage::delete($input['generated_doc']);
                     }
                 });
             });
@@ -266,6 +276,14 @@ class SuratKeluarController extends Controller
                         $path = $this->dropbox->upload($input['doc']);
                         $saved = $s->forceFill(['doc' => $path])->save();
                         if ($old_file && $saved) DropboxAction::deleteFile($old_file);
+                    } elseif (@$input['generated_pdf'] && Storage::exists($input['generated_pdf'])) {
+                        $path = $this->dropbox->upload($input['generated_pdf']);
+                        $s->forceFill(['doc' => $path])->save();
+                        Storage::deleteDirectory(pathinfo($input['generated_pdf'], PATHINFO_DIRNAME));
+                    } elseif (@$input['generated_doc'] && Storage::exists($input['generated_doc'])) {
+                        $path = $this->dropbox->upload($input['generated_doc']);
+                        $s->forceFill(['doc' => $path])->save();
+                        Storage::delete($input['generated_doc']);
                     }
                 });
             });

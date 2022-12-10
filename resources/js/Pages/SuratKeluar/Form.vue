@@ -48,7 +48,10 @@ const setProgress = (progress) => {
     if (files.value.length > 0) files.value[0].progress = progress;
 };
 
-const query = computed(() => stringify({ path: props.form.generated }));
+const query = computed(() => ({
+    doc: stringify({ path: props.form.generated_doc }),
+    pdf: stringify({ path: props.form.generated_pdf }),
+}));
 const form_gen = useForm({
     param: "{}",
     from: props.prefix === "edit" ? "edit" : "add",
@@ -58,7 +61,9 @@ const genDocument = () => {
     form_gen.post(route("surat.keluar.generate"), {
         preserveScroll: true,
         onSuccess: (res) => {
-            emit("change:generated", res.props.jetstream.flash.generated);
+            const { generated_doc: doc, generated_pdf: pdf } =
+                res.props.jetstream.flash;
+            emit("change:generated", { doc, pdf });
         },
     });
 };
@@ -271,7 +276,6 @@ defineExpose({ setProgress });
                         class="bg-slate-50 rounded-md flex flex-col gap-4 border border-blue-300 ease-linear transition-all duration-150"
                     >
                         <div class="p-6">
-                            <input type="hidden" v-model="form.generated" />
                             <span class="block text-xl text-slate-600">
                                 Generate Surat Keluar
                             </span>
@@ -307,22 +311,34 @@ defineExpose({ setProgress });
                                     />
                                 </div>
                                 <div
-                                    v-if="
-                                        form_gen.wasSuccessful && form.generated
-                                    "
+                                    v-if="form_gen.wasSuccessful"
                                     class="flex flex-shrink gap-2"
                                 >
                                     <a
-                                        :href="`${route('file.view')}?${query}`"
+                                        v-if="form.generated_pdf"
+                                        :href="`${route('file.view')}?${
+                                            query.pdf
+                                        }`"
                                         target="_blank"
                                         class="mb-2 inline-flex rounded-3xl border border-indigo-300 py-1 px-5 text-sm font-medium text-slate-800 bg-indigo-200 hover:bg-indigo-500 hover:text-white"
                                     >
                                         Lihat
                                     </a>
                                     <a
-                                        :href="`${route(
-                                            'file.download'
-                                        )}?${query}`"
+                                        v-if="form.generated_pdf"
+                                        :href="`${route('file.download')}?${
+                                            query.pdf
+                                        }`"
+                                        target="_blank"
+                                        class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
+                                    >
+                                        Unduh [.pdf]
+                                    </a>
+                                    <a
+                                        v-if="form.generated_doc"
+                                        :href="`${route('file.download')}?${
+                                            query.doc
+                                        }`"
                                         target="_blank"
                                         class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
                                     >

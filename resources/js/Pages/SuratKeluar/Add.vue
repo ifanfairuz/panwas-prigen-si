@@ -28,7 +28,8 @@ const form = useForm({
         : "",
     surat_masuk_id: props.reference?.id || null,
     doc: null,
-    generated: null,
+    generated_doc: null,
+    generated_pdf: null,
     tanggal_dinas_start: null,
     tanggal_dinas_end: null,
     petugases_id: null,
@@ -57,7 +58,10 @@ const submit = () => {
                 :form="form"
                 @change:file="form.doc = $event"
                 @change:nomor="form.nomor = $event"
-                @change:generated="form.generated = $event"
+                @change:generated="
+                    form.generated_doc = $event.doc;
+                    form.generated_pdf = $event.pdf;
+                "
                 @submit="submit"
             >
                 <template #title>Tambah Surat Keluar</template>

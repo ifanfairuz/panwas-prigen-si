@@ -21,7 +21,8 @@ const form = useForm({
     keterangan: props.data.keterangan,
     surat_masuk_id: props.data.surat_masuk_id || null,
     doc: null,
-    generated: null,
+    generated_doc: null,
+    generated_pdf: null,
     tanggal_dinas_start: props.data.tanggal_dinas_start,
     tanggal_dinas_end: props.data.tanggal_dinas_end,
     petugases_id: props.data.petugases.map((p) => p.id) || null,
@@ -52,7 +53,10 @@ const submit = () => {
                 :old_file="data.doc || null"
                 @change:file="form.doc = $event"
                 @change:nomor="form.nomor = $event"
-                @change:generated="form.generated = $event"
+                @change:generated="
+                    form.generated_doc = $event.doc;
+                    form.generated_pdf = $event.pdf;
+                "
                 @submit="submit"
             >
                 <template #title>Ubah Surat Keluar</template>

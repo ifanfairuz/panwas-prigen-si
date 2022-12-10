@@ -24,13 +24,19 @@ class DropboxAction
     /**
      * upload file
      */
-    public function upload(UploadedFile $file, $name = null)
+    public function upload(UploadedFile|string $file, $name = null)
     {
         if (!$name) $name = md5($this->context . time());
         $filename = self::nameEncode($name);
-        $filename = "{$filename}.{$file->getClientOriginalExtension()}";
+        if (is_string($file)) {
+            $real_path = $file;
+            $filename = "{$filename}." . pathinfo($file, PATHINFO_EXTENSION);
+        } else {
+            $real_path = $file->getRealPath();
+            $filename = "{$filename}.{$file->getClientOriginalExtension()}";
+        }
         $path = $this->context && $this->context !== '' ? "{$this->context}/{$filename}" : $filename;
-        $this->disk()->write($path, file_get_contents($file->getRealPath()));
+        $this->disk()->write($path, file_get_contents($real_path));
         return $path;
     }
 

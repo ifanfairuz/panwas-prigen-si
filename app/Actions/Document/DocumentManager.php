@@ -22,6 +22,30 @@ class DocumentManager
     }
 
     /**
+     * conver docx to pdf
+     * @param string $path
+     * @param string $outdir ''
+     * @return string|null
+     */
+    public function converDocxToPdf($path, $outdir = '')
+    {
+        try {
+            if (!file_exists($path)) throw new \Exception("File not found");
+            if (!$outdir || $outdir == '') {
+                $outdir = "generated/" . pathinfo($path, PATHINFO_BASENAME);
+                Storage::mkdir($outdir);
+                $outdir = Storage::path($outdir);
+            }
+            $command = "libreoffice --headless --convert-to pdf ${$path} --outdir ${$outdir}";
+            $result = shell_exec("type libreoffice &> /dev/null && { ${$command} &> /dev/null; echo \"done\"; exit 0; }  || { exit 1; }");
+            if ($result == "done") return join(DIRECTORY_SEPARATOR, [$outdir, pathinfo($path, PATHINFO_BASENAME) . ".pdf"]);
+            throw new \Exception("Error");
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
      * generate surat keluar
      * @param \App\Models\SuratKeluar $surat
      * @param string $dest
