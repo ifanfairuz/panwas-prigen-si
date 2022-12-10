@@ -25,6 +25,10 @@ processes = []
 [deploy]
   release_command = "php /var/www/html/artisan migrate --force"
 
+[processes]
+  app = ""
+  cron = "cron -f"
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
