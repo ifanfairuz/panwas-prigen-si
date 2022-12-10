@@ -277,13 +277,17 @@ class SuratKeluarController extends Controller
                         $saved = $s->forceFill(['doc' => $path])->save();
                         if ($old_file && $saved) DropboxAction::deleteFile($old_file);
                     } elseif (@$input['generated_pdf'] && Storage::exists($input['generated_pdf'])) {
+                        $old_file = $s->doc;
                         $path = $this->dropbox->upload($input['generated_pdf']);
-                        $s->forceFill(['doc' => $path])->save();
+                        $saved = $s->forceFill(['doc' => $path])->save();
                         Storage::deleteDirectory(pathinfo($input['generated_pdf'], PATHINFO_DIRNAME));
+                        if ($old_file && $saved) DropboxAction::deleteFile($old_file);
                     } elseif (@$input['generated_doc'] && Storage::exists($input['generated_doc'])) {
+                        $old_file = $s->doc;
                         $path = $this->dropbox->upload($input['generated_doc']);
-                        $s->forceFill(['doc' => $path])->save();
+                        $saved = $s->forceFill(['doc' => $path])->save();
                         Storage::delete($input['generated_doc']);
+                        if ($old_file && $saved) DropboxAction::deleteFile($old_file);
                     }
                 });
             });

@@ -311,7 +311,11 @@ defineExpose({ setProgress });
                                     />
                                 </div>
                                 <div
-                                    v-if="form_gen.wasSuccessful"
+                                    v-if="
+                                        form_gen.wasSuccessful &&
+                                        (form.generated_pdf ||
+                                            form.generated_doc)
+                                    "
                                     class="flex flex-shrink gap-2"
                                 >
                                     <a
@@ -344,6 +348,18 @@ defineExpose({ setProgress });
                                     >
                                         Unduh [.docx]
                                     </a>
+                                    <button
+                                        type="button"
+                                        class="mb-2 inline-flex rounded-3xl border border-red-300 py-1 px-5 text-sm font-medium text-slate-800 bg-red-200 hover:bg-red-500 hover:text-white"
+                                        @click="
+                                            $emit('change:generated', {
+                                                doc: null,
+                                                pdf: null,
+                                            })
+                                        "
+                                    >
+                                        Hapus
+                                    </button>
                                 </div>
                             </div>
                         </div>
