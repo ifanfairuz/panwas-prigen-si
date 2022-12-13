@@ -30,6 +30,7 @@ const emit = defineEmits(["submit"]);
                     type="text"
                     class="mt-1 block w-full"
                     autocomplete="name"
+                    autofocus
                 />
                 <InputError :message="form.errors.kode" class="mt-2" />
             </div>
