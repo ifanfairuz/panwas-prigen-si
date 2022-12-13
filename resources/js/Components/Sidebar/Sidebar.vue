@@ -110,16 +110,23 @@ const setShow = (v) => (show.value = v);
                 </ul>
 
                 <!-- Heading -->
-                <NavHead>Pembukuan</NavHead>
+                <NavHead>Keuangan</NavHead>
 
                 <!-- Navigation -->
                 <ul class="md:flex-col md:min-w-full flex flex-col list-none">
                     <NavLink
-                        :href="route('keuangan.index')"
-                        :active="route().current('keuangan.*')"
+                        :href="route('keuangan.komponen.index')"
+                        :active="route().current('keuangan.komponen.*')"
+                    >
+                        <i class="fas fa-boxes-stacked mr-2 text-sm"></i>
+                        Komponen
+                    </NavLink>
+                    <NavLink
+                        :href="route('keuangan.pembukuan.index')"
+                        :active="route().current('keuangan.pembukuan.*')"
                     >
                         <i class="fas fa-usd mr-2 text-sm"></i>
-                        Keuangan
+                        Pembukuan
                     </NavLink>
                 </ul>
 

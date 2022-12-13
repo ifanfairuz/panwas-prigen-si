@@ -3,6 +3,7 @@
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\KomponenKeuanganController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\SuratKeluarController;
 use App\Http\Controllers\SuratMasukController;
@@ -94,7 +95,19 @@ Route::middleware([
     });
 
     // keuangan
-    Route::get('/keuangan', function () {
-        return Inertia::render('Dashboard');
-    })->name('keuangan.index');
+    Route::name('keuangan.')->prefix('keuangan')->group(function () {
+        Route::name('komponen.')->prefix('komponen')->group(function () {
+            Route::get('/', [KomponenKeuanganController::class, 'index'])->name('index');
+            Route::get('/view/{id}', [KomponenKeuanganController::class, 'view'])->name('view');
+            Route::get('/add', [KomponenKeuanganController::class, 'add'])->name('add');
+            Route::post('/add', [KomponenKeuanganController::class, 'create'])->name('create');
+            Route::get('/edit/{id}', [KomponenKeuanganController::class, 'edit'])->name('edit');
+            Route::post('/edit/{id}', [KomponenKeuanganController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}', [KomponenKeuanganController::class, 'delete'])->name('delete');
+        });
+
+        Route::get('/pembukuan', function () {
+            return Inertia::render('Dashboard');
+        })->name('pembukuan.index');
+    });
 });
