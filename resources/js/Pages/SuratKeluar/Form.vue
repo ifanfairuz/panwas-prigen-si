@@ -37,12 +37,13 @@ const onChangeFile = (v) => {
 };
 const genNomor = () => {
     if (props.prefix === "edit") return;
-    const label = props.form.type.match(/^(\w+)_panwas$/) ? "K.JI" : "JI";
+    const labela = props.form.type.match(/^(\w+)_panwas$/) ? "RT.02" : "KP.01";
+    const labelb = props.form.type.match(/^(\w+)_panwas$/) ? "K.JI" : "JI";
     const from_date = DateTime.fromFormat(props.form.tanggal, "yyyy-MM-dd");
     const mY = (from_date.isValid ? from_date : DateTime.now()).toFormat(
         "MM/yyyy"
     );
-    emit("change:nomor", `${props.form.urut}/KP.01/${label}-20.10/${mY}`);
+    emit("change:nomor", `${props.form.urut}/${labela}/${labelb}-20.10/${mY}`);
 };
 const setProgress = (progress) => {
     if (files.value.length > 0) files.value[0].progress = progress;

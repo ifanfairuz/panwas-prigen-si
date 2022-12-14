@@ -56,7 +56,7 @@ class DropboxAction
      */
     public static function nameEncode($name)
     {
-        return trim(Str::replace(['/', '\\'], ['-', '-'], $name));
+        return trim(Str::replace(['/', '\\', '.'], ['-', '-', '-'], $name));
     }
 
     /**
