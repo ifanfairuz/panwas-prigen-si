@@ -24,6 +24,7 @@ class ConfigController extends Controller
             'tugas_panwas' => "S-Tugas TTD Ketua",
             'keluar_panwas' => "S-Keluar TTD Ketua",
             'tugas_sekretariat' => "S-Keluar Kesekretariatan",
+            'spd' => "Surat Perjalanan Dinas",
         ]);
         return Inertia::render('Config/Index', [
             'dropbox' => [
@@ -52,12 +53,12 @@ class ConfigController extends Controller
             $file = $request->file('file');
             $file->storeAs('templates', "{$type}.{$file->getClientOriginalExtension()}", 'local');
 
-            return response()->redirectWithBanner('administration.config.index', 'Surat diupload!');
+            return response()->injectRedirectBanner(back(), 'Surat diupload!');
         } catch (ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
             dd($exception);
-            return response()->renderErrorBanner('Config/Index', "Gagal - {$exception->getMessage()}");
+            return response()->injectErrorBanner($this->index($request), "Gagal - {$exception->getMessage()}");
         }
     }
 

@@ -10,7 +10,6 @@ const props = defineProps({
 });
 const formComp = ref(null);
 const form = useForm({
-    urut: props.data.nomor.substring(0, 3),
     type: props.data.type,
     nomor: props.data.nomor,
     tanggal: DateTime.fromISO(props.data.tanggal).toISODate(),
@@ -56,6 +55,10 @@ const submit = () => {
                 @change:generated="
                     form.generated_doc = $event.doc;
                     form.generated_pdf = $event.pdf;
+                "
+                @change:generated_spd="
+                    form.generated_doc_spd = $event.doc;
+                    form.generated_pdf_spd = $event.pdf;
                 "
                 @submit="submit"
             >

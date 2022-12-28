@@ -6,6 +6,19 @@ import Form from "./Form.vue";
 const form = useForm({
     nama: "",
     jabatan: "",
+    tempat_lahir: "",
+    tanggal_lahir: "",
+    alamat: "",
+    pendidikan: "",
+    jk: "",
+    agama: "",
+    pangkat: "",
+    tingkat: "",
+    nik: "",
+    nip: "",
+    npwp: "",
+    no_hp: "",
+    email: "",
 });
 
 const submit = () => {
@@ -21,7 +34,12 @@ const submit = () => {
         <template #header> Petugas </template>
 
         <div class="py-8">
-            <Form :form="form" @submit="submit">
+            <Form
+                :form="form"
+                @change:npwp="form.npwp = $event"
+                @change:nip="form.nip = $event"
+                @submit="submit"
+            >
                 <template #title> Add Petugas </template>
             </Form>
         </div>

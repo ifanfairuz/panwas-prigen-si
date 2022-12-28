@@ -64,6 +64,7 @@ Route::middleware([
     // petugas
     Route::name('petugas.')->prefix('petugas')->group(function () {
         Route::get('/', [PetugasController::class, 'index'])->name('index');
+        Route::get('/view/{id}', [PetugasController::class, 'view'])->name('view');
         Route::get('/add', [PetugasController::class, 'add'])->name('add');
         Route::post('/add', [PetugasController::class, 'create'])->name('create');
         Route::get('/edit/{id}', [PetugasController::class, 'edit'])->name('edit');
@@ -91,7 +92,9 @@ Route::middleware([
         Route::get('/edit/{id}', [SuratKeluarController::class, 'edit'])->name('edit');
         Route::post('/edit/{id}', [SuratKeluarController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [SuratKeluarController::class, 'delete'])->name('delete');
+        Route::get('/get_urut', [SuratKeluarController::class, 'get_urut'])->name('get_urut');
         Route::post('/generate', [SuratKeluarController::class, 'generate'])->name('generate');
+        Route::post('/generate_spd', [SuratKeluarController::class, 'generate_spd'])->name('generate_spd');
     });
 
     // keuangan

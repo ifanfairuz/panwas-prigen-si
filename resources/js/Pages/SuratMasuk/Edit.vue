@@ -17,6 +17,7 @@ const form = useForm({
     perihal: props.data.perihal,
     tempat: props.data.tempat,
     keterangan: props.data.keterangan,
+    jenis: props.data.jenis ?? "",
     doc: null,
 });
 

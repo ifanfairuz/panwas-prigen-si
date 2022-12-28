@@ -92,6 +92,23 @@ const uploadFile = (type, files) => {
                                 @change="uploadFile(t, $event)"
                             />
                         </div>
+                        <div>
+                            <div
+                                class="flex items-center justify-between gap-4 mb-2"
+                            >
+                                <p class="text-base">Surat Perjalanan Dinas</p>
+                            </div>
+                            <DescriptionItemFile
+                                v-if="templates['spd']"
+                                class="px-0 sm:px-0 py-0 pb-2"
+                                provider="local"
+                                :value="templates['spd']"
+                            />
+                            <Dropzone
+                                accept=".docx"
+                                @change="uploadFile('spd', $event)"
+                            />
+                        </div>
                     </div>
                 </template>
             </ActionSection>

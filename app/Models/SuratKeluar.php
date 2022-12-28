@@ -11,7 +11,7 @@ class SuratKeluar extends Model
 {
     use HasFactory, HasDateHelper;
     protected $table = "surat_keluar";
-    protected $appends = ['range_dinas'];
+    protected $appends = ['duration_dinas', 'range_dinas'];
 
     /**
      * The attributes that should be cast.
@@ -70,17 +70,35 @@ class SuratKeluar extends Model
      * get next nomor urut
      * @return string
      */
-    public static function getNextUrut()
+    public static function getNextUrut($code, $tahun = null)
     {
         try {
-            $data = SuratKeluar::selectRaw('MAX(SUBSTRING("nomor", 1, 3)) as "urut"')->firstOrFail();
+            $tahun = $tahun ?? now()->year;
+            $data = SuratKeluar::selectRaw('MAX(SUBSTRING("nomor", 1, 3)) as "urut"')
+                    ->whereRaw('SUBSTRING("nomor", 4, '. strlen($code) .') like ?', $code)
+                    ->whereRaw('EXTRACT(YEAR from "tanggal") = ?', $tahun)
+                    ->firstOrFail();
             $urut = (int) (@$data['urut'] ?? '0');
             return str_pad(++$urut, 3, '0', STR_PAD_LEFT);
         } catch (\Exception $e) {
+            dd($e);
             return '';
         }
     }
 
+    /**
+     * get tanggal dinas length
+     * @return string
+     */
+    public function tanggal_dinas_length()
+    {
+        try {
+            return $this->rangeFormat($this->tanggal_dinas_start, $this->tanggal_dinas_end);
+        } catch (\Exception $e) {
+            return '';
+        }
+    }
+    
     /**
      * get tanggal dinas readable
      * @return string
@@ -95,7 +113,19 @@ class SuratKeluar extends Model
     }
 
     /**
-     * Determine if the user is an administrator.
+     * Duration tanggal dinas
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function durationDinas(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->dateDurationStr($this->tanggal_dinas_start, $this->tanggal_dinas_end),
+        );
+    }
+
+    /**
+     * Range tanggal dinas
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */

@@ -18,7 +18,8 @@ class FileController extends Controller
     {
         $path = $request->query('path');
         $provider = $request->query('provider', 'local');
-        $filename = DropboxAction::nameEncode($request->query('filename', pathinfo($path, PATHINFO_BASENAME)));
+        $basename = $request->query('filename', pathinfo($path, PATHINFO_BASENAME));
+        $filename = DropboxAction::nameEncode(pathinfo($basename, PATHINFO_FILENAME)) .".". pathinfo($basename, PATHINFO_EXTENSION);
 
         switch ($provider) {
             case 'local':
@@ -52,7 +53,8 @@ class FileController extends Controller
     {
         $path = $request->query('path');
         $provider = $request->query('provider', 'local');
-        $filename = DropboxAction::nameEncode($request->query('filename', pathinfo($path, PATHINFO_BASENAME)));
+        $basename = $request->query('filename', pathinfo($path, PATHINFO_BASENAME));
+        $filename = DropboxAction::nameEncode(pathinfo($basename, PATHINFO_FILENAME)) .".". pathinfo($basename, PATHINFO_EXTENSION);
 
         switch ($provider) {
             case 'local':

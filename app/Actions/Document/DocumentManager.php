@@ -28,7 +28,7 @@ class DocumentManager
      * @param string $outdir ''
      * @return string|null
      */
-    public function converDocxToPdf($path, $outdir = '')
+    public function convertDocxToPdf($path, $outdir = '')
     {
         try {
             if (!Storage::exists($path)) throw new \Exception("File not found");
@@ -68,16 +68,68 @@ class DocumentManager
                 'nomor' => $surat->nomor,
                 'perihal' => $surat->perihal,
                 'tempat' => $surat->tempat,
-                'nomor_surat_masuk' => $surat->surat_masuk ? $surat->surat_masuk->nomor : '-',
                 'tanggal_dinas' => $surat->tanggal_dinas_readable(),
                 'tanggal_pembuatan' => $this->dateFormat($surat->tanggal),
             ]);
+            
+            $extras = [];
+            if ($surat->surat_masuk) {
+                $extras[] = [
+                    'jenis_extra' => $surat->surat_masuk->jenis ?? 'Undangan',
+                    'nomor_extra' => $surat->surat_masuk->nomor,
+                ];
+            }
+            $processor->cloneBlock('extra_info', 0, true, false, $extras);
+
             $petugases = $surat->petugases->count() == 0 ? $this->getPetugases($surat->petugases_id) : $surat->petugases;
             $petugases = $petugases->map(fn (Petugas $p, int $i) => [
                 ...$p->only(['nama', 'jabatan']),
                 ...($i == 0 ? ['petugas' => 'Kepada', 'd' => ':'] : ['petugas' => '', 'd' => '']),
             ])->toArray();
             $processor->cloneRowAndSetValues('petugas', $petugases);
+
+            if (file_exists($dest)) unlink($dest);
+            $processor->saveAs($dest);
+            return $filename;
+        } catch (\Exception $e) {
+            throw $e;
+            return false;
+        }
+    }
+
+    /**
+     * generate surat perjalanan dinas
+     * @param \App\Models\SuratKeluar $surat
+     * @param string $dest
+     * @return string|false
+     */
+    public function generateSPD($surat, $dest)
+    {
+        try {
+            $template = Storage::path("templates/spd.docx");
+            if (!file_exists($template)) throw new \Exception("Template not found.");
+            $filename = "surat_keluar/spd_{$dest}";
+            $dest = Storage::path($filename);
+
+            $processor = new TemplateProcessor($template);
+            $general_datas = [
+                'perihal' => $surat->perihal,
+                'tempat' => $surat->tempat,
+                'tanggal_dinas_start' => $this->dateFormat($surat->tanggal_dinas_start),
+                'tanggal_dinas_end' => $this->dateFormat($surat->tanggal_dinas_end),
+                'tanggal_dinas_length' => $surat->duration_dinas,
+                'tanggal' => $this->dateFormat($surat->tanggal),
+            ];
+            $petugases = $this->getPetugases($surat->petugases_id);
+            $datas = $petugases->map(fn (Petugas $p) => [
+                ...$general_datas,
+                'nama' => $p->nama,
+                'pangkat' => $p->pangkat,
+                'jabatan' => $p->jabatan,
+                'tingkat' => $p->tingkat,
+            ])->toArray();
+            $processor->cloneBlock('spd_block', 0, true, false, $datas);
+            $processor->setValues($general_datas);
 
             if (file_exists($dest)) unlink($dest);
             $processor->saveAs($dest);

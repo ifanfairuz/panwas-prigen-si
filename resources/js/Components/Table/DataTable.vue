@@ -26,7 +26,12 @@ onUnmounted(() => {
 
 <template>
     <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 justify-end">
+        <div
+            class="flex flex-col items-start lg:flex-row lg:items-center gap-2 justify-between"
+        >
+            <slot name="filter">
+                <div></div>
+            </slot>
             <div class="flex items-center gap-4">
                 <div
                     class="py-2 px-1 flex items-center rounded-3xl overflow-hidden border border-blue-300 placeholder-slate-400 text-slate-600 bg-gray-50 rounded text-sm shadow-md focus:outline-none w-[300px]"

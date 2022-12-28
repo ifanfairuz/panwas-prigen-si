@@ -91,11 +91,10 @@ class TokenProvider implements Provider
             ->post('https://api.dropboxapi.com/oauth2/token', [
                 'refresh_token' => $refresh_token,
                 'grant_type' => 'refresh_token',
-                'redirect_uri' => route('administration.config.dropbox.granted'),
             ]);
         if ($response->successful()) {
             $data = json_decode($response->body(), true);
-            $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->toISOString();
+            $data['expires_on'] = now()->addSeconds($data['expires_in'])->subSeconds(20)->format(Carbon::ISO8601);
             $this->token->mergeJson($data);
         } else {
             throw $response->toException();

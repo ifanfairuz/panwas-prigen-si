@@ -40,6 +40,10 @@ const action = (url, type) => {
                     <div>
                         <dl>
                             <DescriptionItem
+                                label="Jenis"
+                                :value="data.jenis"
+                            />
+                            <DescriptionItem
                                 label="Nomor"
                                 :value="data.nomor"
                             />

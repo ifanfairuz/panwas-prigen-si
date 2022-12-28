@@ -49,4 +49,39 @@ trait HasDateHelper {
         }
     }
 
+    protected function terbilang($x)
+    {
+        $angka = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($x < 12)
+            return " " . $angka[$x];
+        elseif ($x < 20)
+            return $this->terbilang($x - 10) . " belas";
+        elseif ($x < 100)
+            return $this->terbilang($x / 10) . " puluh" . $this->terbilang($x % 10);
+        elseif ($x < 200)
+            return "seratus" . $this->terbilang($x - 100);
+        elseif ($x < 1000)
+            return $this->terbilang($x / 100) . " ratus" . $this->terbilang($x % 100);
+        elseif ($x < 2000)
+            return "seribu" . $this->terbilang($x - 1000);
+        elseif ($x < 1000000)
+            return $this->terbilang($x / 1000) . " ribu" . $this->terbilang($x % 1000);
+        elseif ($x < 1000000000)
+            return $this->terbilang($x / 1000000) . " juta" . $this->terbilang($x % 1000000);
+    }
+
+    public function dateDuration($start, $end)
+    {
+        $s = $start instanceof Carbon ? $start : Carbon::parse($start);
+        $e = $end instanceof Carbon ? $end : Carbon::parse($end);
+        return $s->diffInDays($e) + 1;
+    }
+
+    public function dateDurationStr($start, $end)
+    {
+        $l = $this->dateDuration($start, $end);
+        return $l ." (". trim($this->terbilang($l)) .") Hari";
+    }
+
 }

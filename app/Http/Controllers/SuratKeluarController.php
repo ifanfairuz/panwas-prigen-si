@@ -35,28 +35,68 @@ class SuratKeluarController extends Controller
     }
 
     /**
-     * surat keluar page
+     * surat keluar generate
      * @param \Illuminate\Http\Request $request
      * @return \Inertia\Response
      */
     public function generate(Request $request)
     {
         try {
-            $from = $request->input("from", "add");
             $input = json_decode($request->input("param", "{}"), true);
             $model = new SuratKeluar($input);
             $filename = md5($input['nomor']) . ".docx";
             if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
                 $model->petugases_id = $input['petugases_id'];
             }
-            $generated_doc = $this->document->generateSuratKeluar($model, $filename);
-            $generated_pdf = $this->document->converDocxToPdf($generated_doc);
+            $doc = $this->document->generateSuratKeluar($model, $filename);
+            $pdf = $this->document->convertDocxToPdf($doc);
 
-            return back()->with('flash.generated_doc', $generated_doc)->with('flash.generated_pdf', $generated_pdf);
+            return response()->json([
+                'doc' => $doc,
+                'pdf' => $pdf,
+            ]);
         } catch (\Exception $exception) {
             dd($exception);
-            return response()->redirectWithBanner("surat.keluar.{$from}", "Gagal generate dokumen - {$exception->getMessage()}");
+            return response()->injectRedirectBanner(back(), "Gagal generate dokumen - {$exception->getMessage()}", "danger");
         }
+    }
+
+    /**
+     * surat keluar generate spd
+     * @param \Illuminate\Http\Request $request
+     * @return \Inertia\Response
+     */
+    public function generate_spd(Request $request)
+    {
+        try {
+            $input = json_decode($request->input("param", "{}"), true);
+            $model = new SuratKeluar($input);
+            $filename = md5($input['nomor']) . ".docx";
+            if (@$input['petugases_id'] && is_array($input['petugases_id'])) {
+                $model->petugases_id = $input['petugases_id'];
+            }
+            $doc = $this->document->generateSPD($model, $filename);
+            $pdf = $this->document->convertDocxToPdf($doc);
+
+            return response()->json([
+                'doc' => $doc,
+                'pdf' => $pdf,
+            ]);
+        } catch (\Exception $exception) {
+            dd($exception);
+            return response()->injectRedirectBanner(back(), "Gagal generate dokumen - {$exception->getMessage()}", "danger");
+        }
+    }
+
+    /**
+     * surat keluar generate nomor
+     * @param \Illuminate\Http\Request $request
+     * @return \Inertia\Response
+     */
+    public function get_urut(Request $request)
+    {
+        $urut = SuratKeluar::getNextUrut($request->input('code'), $request->input('tahun', null));
+        return response()->json(['urut' => $urut]);
     }
 
     /**
@@ -66,7 +106,10 @@ class SuratKeluarController extends Controller
      */
     public function index(Request $request)
     {
-        $datas = SuratKeluar::orderBy('nomor')->get();
+        $type = $request->query('type', null);
+        $query = SuratKeluar::orderBy('tanggal', 'desc');
+        if ($type) $query = $query->where('type', $type);
+        $datas = $query->get();
         return Inertia::render('SuratKeluar/Index', [
             'datas' => $datas
         ]);
@@ -104,14 +147,11 @@ class SuratKeluarController extends Controller
             $references = SuratMasuk::all();
             $reference = SuratMasuk::find($refid);
 
-            $urut = SuratKeluar::getNextUrut();
-
             return Inertia::render('SuratKeluar/Add', [
                 'petugases' => Petugas::all(),
                 'references' => $references,
                 'type' => $type,
                 'reference' => $reference ?? (object) [],
-                'urut' => $urut ?? ''
             ]);
         } catch (\Exception $e) {
             throw $e;
@@ -203,14 +243,11 @@ class SuratKeluarController extends Controller
             $references = SuratMasuk::all();
             $reference = SuratMasuk::find($refid);
 
-            $urut = SuratKeluar::getNextUrut();
-
             return Inertia::render('SuratKeluar/Edit', [
                 'petugases' => Petugas::all(),
                 'references' => $references,
                 'type' => $type,
                 'reference' => $reference ?? (object) [],
-                'urut' => $urut ?? '',
                 'data' => $data->toArray()
             ]);
         } catch (\Exception $e) {
@@ -299,10 +336,10 @@ class SuratKeluarController extends Controller
             throw $exception;
         } catch (FilesystemException | UnableToWriteFile $exception) {
             DB::rollBack();
-            return response()->renderErrorBanner('SuratKeluar/Edit', "Gagal unggah dokumen - {$exception->getMessage()}");
+            return response()->injectErrorBanner($this->edit($request, $id), "Gagal unggah dokumen - {$exception->getMessage()}");
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->renderErrorBanner('SuratKeluar/Edit', "Gagal - {$exception->getMessage()}");
+            return response()->injectErrorBanner($this->edit($request, $id), "Gagal - {$exception->getMessage()}");
         }
     }
 

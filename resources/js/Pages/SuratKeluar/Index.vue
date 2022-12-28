@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { Link, useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ActionSection from "@/Components/Section/ActionSection.vue";
@@ -8,7 +8,9 @@ import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
 import ConfirmationModal from "@/Components/Modal/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 import DangerButton from "@/Components/Button/DangerButton.vue";
-import { types } from "@/lib/support";
+import { types, types_options } from "@/lib/support";
+import SelectInput from "@/Components/Form/SelectInput.vue";
+import { parse } from "query-string";
 
 defineProps({
     datas: Array,
@@ -24,6 +26,14 @@ const columns = [
 ];
 const deletion = ref(null);
 const form = useForm({});
+const filter = useForm({
+    type: parse(window.location.search).type || "",
+});
+
+const filter_types_options = computed(() => [
+    { code: "", label: "Semua Tipe" },
+    ...types_options,
+]);
 
 const tryDelete = (id) => {
     deletion.value = id;
@@ -33,6 +43,11 @@ const deleteData = () => {
     form.delete(route("surat.keluar.delete", deletion.value), {
         errorBag: "deleteData",
         onSuccess: () => (deletion.value = null),
+    });
+};
+const submitFilter = () => {
+    filter.get(route(route().current()), {
+        replace: true,
     });
 };
 </script>
@@ -54,6 +69,21 @@ const deleteData = () => {
                 </template>
                 <template #content>
                     <DataTable :headers="columns" :items="datas" show-index>
+                        <template #filter>
+                            <div
+                                class="w-full flex gap-2 items-center md:max-w-sm"
+                            >
+                                <label for="type">Filter :</label>
+                                <SelectInput
+                                    id="type"
+                                    class="flex-1"
+                                    v-model="filter.type"
+                                    :options="filter_types_options"
+                                    placeholder="Filter Tipe"
+                                    @option:selected="submitFilter"
+                                />
+                            </div>
+                        </template>
                         <template #item-action="{ id }">
                             <div class="flex gap-2">
                                 <Link

@@ -43,6 +43,16 @@ onMounted(() => {
         <template #form>
             <div class="grid col-span-4 grid-cols-8 gap-6">
                 <div class="col-span-8 sm:col-span-4">
+                    <InputLabel for="jenis" value="Jenis" />
+                    <TextInput
+                        id="jenis"
+                        v-model="form.jenis"
+                        type="text"
+                        class="mt-1 block w-full"
+                    />
+                    <InputError :message="form.errors.jenis" class="mt-2" />
+                </div>
+                <div class="col-span-8 sm:col-span-4">
                     <InputLabel for="nomor" value="Nomor" />
                     <TextInput
                         id="nomor"

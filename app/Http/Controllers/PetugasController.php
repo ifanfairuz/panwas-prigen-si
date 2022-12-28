@@ -17,10 +17,28 @@ class PetugasController extends Controller
      */
     public function index(Request $request)
     {
-        $petugas = Petugas::all();
+        $petugas = Petugas::orderBy('id')->get();
         return Inertia::render('Petugas/Index', [
             'datas' => $petugas
         ]);
+    }
+
+    /**
+     * view petugas page
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Inertia\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function view(Request $request, $id)
+    {
+        try {
+            $data = Petugas::findOrFail($id);
+            return Inertia::render('Petugas/View', [
+                'data' => $data->toArray()
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('petugas.index');
+        }
     }
 
     /**
@@ -49,11 +67,37 @@ class PetugasController extends Controller
             Validator::make($input, [
                 'nama' => ['required', 'string', 'max:255'],
                 'jabatan' => ['required', 'string', 'max:255'],
+                'tempat_lahir' => ['nullable', 'string', 'max:255'],
+                'tanggal_lahir' => ['required', 'date'],
+                'alamat' => ['required', 'string', 'max:500'],
+                'pendidikan' => ['nullable', 'string', 'max:255'],
+                'jk' => ['required', 'string', 'max:1'],
+                'agama' => ['required', 'string', 'max:255'],
+                'pangkat' => ['required', 'string', 'max:255'],
+                'tingkat' => ['required', 'string', 'max:255'],
+                'nik' => ['required', 'string', 'max:255'],
+                'nip' => ['nullable', 'string', 'max:255'],
+                'npwp' => ['nullable', 'string', 'max:255'],
+                'no_hp' => ['nullable', 'string', 'max:255'],
+                'email' => ['nullable', 'string', 'max:255'],
             ])->validate();
             
             Petugas::create([
                 'nama' => $input['nama'],
                 'jabatan' => $input['jabatan'],
+                'tempat_lahir' => $input['tempat_lahir'],
+                'tanggal_lahir' => $input['tanggal_lahir'],
+                'alamat' => $input['alamat'],
+                'pendidikan' => $input['pendidikan'],
+                'jk' => $input['jk'],
+                'agama' => $input['agama'],
+                'pangkat' => $input['pangkat'],
+                'tingkat' => $input['tingkat'],
+                'nik' => $input['nik'],
+                'nip' => $input['nip'],
+                'npwp' => $input['npwp'],
+                'no_hp' => $input['no_hp'],
+                'email' => $input['email'],
             ]);
 
             return response()->redirectWithBanner('petugas.index', 'Petugas disimpan!');
@@ -96,11 +140,37 @@ class PetugasController extends Controller
             Validator::make($input, [
                 'nama' => ['required', 'string', 'max:255'],
                 'jabatan' => ['required', 'string', 'max:255'],
+                'tempat_lahir' => ['nullable', 'string', 'max:255'],
+                'tanggal_lahir' => ['required', 'date'],
+                'alamat' => ['required', 'string', 'max:500'],
+                'pendidikan' => ['nullable', 'string', 'max:255'],
+                'jk' => ['required', 'string', 'max:1'],
+                'agama' => ['required', 'string', 'max:255'],
+                'pangkat' => ['required', 'string', 'max:255'],
+                'tingkat' => ['required', 'string', 'max:255'],
+                'nik' => ['required', 'string', 'max:255'],
+                'nip' => ['nullable', 'string', 'max:255'],
+                'npwp' => ['nullable', 'string', 'max:255'],
+                'no_hp' => ['nullable', 'string', 'max:255'],
+                'email' => ['nullable', 'string', 'max:255'],
             ])->validate();
             
             $petugas->forceFill([
                 'nama' => $input['nama'],
                 'jabatan' => $input['jabatan'],
+                'tempat_lahir' => $input['tempat_lahir'],
+                'tanggal_lahir' => $input['tanggal_lahir'],
+                'alamat' => $input['alamat'],
+                'pendidikan' => $input['pendidikan'],
+                'jk' => $input['jk'],
+                'agama' => $input['agama'],
+                'pangkat' => $input['pangkat'],
+                'tingkat' => $input['tingkat'],
+                'nik' => $input['nik'],
+                'nip' => $input['nip'],
+                'npwp' => $input['npwp'],
+                'no_hp' => $input['no_hp'],
+                'email' => $input['email'],
             ])->save();
 
             return response()->redirectWithBanner('petugas.index', 'Petugas diupdate!');

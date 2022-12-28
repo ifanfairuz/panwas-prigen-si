@@ -25,7 +25,7 @@ processes = []
   LOG_LEVEL = "debug"
 
 [deploy]
-  release_command = "php /var/www/html/artisan migrate --force"
+  release_command = "php /var/www/html/artisan migrate --force --seed"
 
 [processes]
   app = ""

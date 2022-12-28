@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { DateTime } from "luxon";
-import { Link, useForm, usePage } from "@inertiajs/inertia-vue3";
+import { Link, usePage } from "@inertiajs/inertia-vue3";
 import FormSection from "@/Components/Section/FormSection.vue";
 import TextInput from "@/Components/Form/TextInput.vue";
 import InputLabel from "@/Components/Form/InputLabel.vue";
@@ -14,6 +14,7 @@ import Dropzone from "@/Components/Form/Dropzone.vue";
 import SelectInput from "@/Components/Form/SelectInput.vue";
 import { types, types_options } from "@/lib/support";
 import { stringify } from "query-string";
+import axios from "axios";
 
 const props = defineProps({
     prefix: String,
@@ -23,12 +24,16 @@ const props = defineProps({
 const references = usePage().props.value.references;
 const petugases = usePage().props.value.petugases;
 const files = ref([]);
+const urut = ref("000");
+const generated_success = ref(false);
+const generated_spd_success = ref(false);
 
 const emit = defineEmits([
     "submit",
     "change:file",
     "change:nomor",
     "change:generated",
+    "change:generated_spd",
 ]);
 const onChangeFile = (v) => {
     const f = v.length > 0 ? v[0] : null;
@@ -37,13 +42,25 @@ const onChangeFile = (v) => {
 };
 const genNomor = () => {
     if (props.prefix === "edit") return;
-    const labela = props.form.type.match(/^(\w+)_panwas$/) ? "RT.02" : "KP.01";
+    const labela = props.form.type.match(/^(\w+)_panwas$/) ? "RT.01" : "KP.01";
     const labelb = props.form.type.match(/^(\w+)_panwas$/) ? "K.JI" : "JI";
     const from_date = DateTime.fromFormat(props.form.tanggal, "yyyy-MM-dd");
     const mY = (from_date.isValid ? from_date : DateTime.now()).toFormat(
         "MM/yyyy"
     );
-    emit("change:nomor", `${props.form.urut}/${labela}/${labelb}-20.10/${mY}`);
+    const code = `/${labela}/${labelb}-20.10/`;
+    const tahun = mY.split("/").pop();
+    axios
+        .get(route("surat.keluar.get_urut"), {
+            params: { code, tahun },
+        })
+        .then((res) => {
+            urut.value = res.data.urut;
+            emit(
+                "change:nomor",
+                `${urut.value}/${labela}/${labelb}-20.10/${mY}`
+            );
+        });
 };
 const setProgress = (progress) => {
     if (files.value.length > 0) files.value[0].progress = progress;
@@ -52,26 +69,45 @@ const setProgress = (progress) => {
 const query = computed(() => ({
     doc: stringify({ path: props.form.generated_doc }),
     pdf: stringify({ path: props.form.generated_pdf }),
+    doc_spd: stringify({ path: props.form.generated_doc_spd }),
+    pdf_spd: stringify({ path: props.form.generated_pdf_spd }),
 }));
-const form_gen = useForm({
-    param: "{}",
-    from: props.prefix === "edit" ? "edit" : "add",
-});
 const genDocument = () => {
-    form_gen.param = JSON.stringify(props.form.data());
-    form_gen.post(route("surat.keluar.generate"), {
-        preserveScroll: true,
-        onSuccess: (res) => {
-            const { generated_doc: doc, generated_pdf: pdf } =
-                res.props.jetstream.flash;
-            emit("change:generated", { doc, pdf });
-        },
-    });
+    generated_success.value = false;
+    axios
+        .post(route("surat.keluar.generate"), {
+            param: JSON.stringify(props.form.data()),
+        })
+        .then((res) => {
+            emit("change:generated", res.data);
+            generated_success.value = true;
+            setTimeout(() => (generated_success.value = false), 1000);
+        })
+        .catch(() => {
+            emit("change:generated", { doc: null, pdf: null });
+            generated_success.value = false;
+        });
+};
+const genDocumentSPD = () => {
+    generated_spd_success.value = false;
+    axios
+        .post(route("surat.keluar.generate_spd"), {
+            param: JSON.stringify(props.form.data()),
+        })
+        .then((res) => {
+            emit("change:generated_spd", res.data);
+            generated_spd_success.value = true;
+            setTimeout(() => (generated_spd_success.value = false), 1000);
+        })
+        .catch(() => {
+            emit("change:generated_spd", { doc: null, pdf: null });
+            generated_spd_success.value = false;
+        });
 };
 
 onMounted(() => {
     if (props.old_file) files.value = [{ file: { name: props.old_file } }];
-    genNomor();
+    if (props.prefix !== "edit") genNomor();
 });
 defineExpose({ setProgress });
 </script>
@@ -110,37 +146,17 @@ defineExpose({ setProgress });
                         :clearable="true"
                         :options="references"
                         :reduce="(o) => o.id"
-                        @change="genNomor"
                         placeholder="Surat Masuk"
                     >
-                        <template #option="{ nomor, perihal }">
-                            {{ nomor }} - {{ perihal }}
+                        <template #option="{ nomor, jenis, perihal }">
+                            <strong>{{ jenis || " " }}</strong> | {{ nomor }}
+                            {{ perihal }}
                         </template>
                     </SelectInput>
                     <InputError
                         :message="form.errors.surat_masuk_id"
                         class="mt-2"
                     />
-                </div>
-                <div class="col-span-8 sm:col-span-4">
-                    <InputLabel for="urut" value="Urut" />
-                    <TextInput
-                        id="urut"
-                        v-model="form.urut"
-                        type="text"
-                        class="mt-1 block w-full"
-                        @change="genNomor"
-                    />
-                </div>
-                <div class="col-span-8 sm:col-span-4">
-                    <InputLabel for="nomor" value="Nomor" />
-                    <TextInput
-                        id="nomor"
-                        v-model="form.nomor"
-                        type="text"
-                        class="mt-1 block w-full"
-                    />
-                    <InputError :message="form.errors.nomor" class="mt-2" />
                 </div>
                 <div class="col-span-8 sm:col-span-4">
                     <InputLabel for="tanggal" value="Tanggal Keluar" />
@@ -152,6 +168,28 @@ defineExpose({ setProgress });
                         @change="genNomor"
                     />
                     <InputError :message="form.errors.tanggal" class="mt-2" />
+                </div>
+                <div class="col-span-8 sm:col-span-4">
+                    <InputLabel
+                        for="nomor"
+                        class="flex flex-row justify-between"
+                    >
+                        <span>Nomor</span>
+                        <button
+                            type="button"
+                            class="underline"
+                            @click="genNomor"
+                        >
+                            Generate Nomor
+                        </button>
+                    </InputLabel>
+                    <TextInput
+                        id="nomor"
+                        v-model="form.nomor"
+                        type="text"
+                        class="mt-1 block w-full"
+                    />
+                    <InputError :message="form.errors.nomor" class="mt-2" />
                 </div>
                 <div class="col-span-8 sm:col-span-4">
                     <InputLabel for="tujuan" value="Tujuan Surat" />
@@ -224,7 +262,6 @@ defineExpose({ setProgress });
                         v-model="form.tanggal_dinas_start"
                         type="date"
                         class="mt-1 block w-full"
-                        @change="genNomor"
                     />
                     <InputError
                         :message="form.errors.tanggal_dinas_start"
@@ -241,7 +278,6 @@ defineExpose({ setProgress });
                         v-model="form.tanggal_dinas_end"
                         type="date"
                         class="mt-1 block w-full"
-                        @change="genNomor"
                     />
                     <InputError
                         :message="form.errors.tanggal_dinas_end"
@@ -277,90 +313,145 @@ defineExpose({ setProgress });
                         class="bg-slate-50 rounded-md flex flex-col gap-4 border border-blue-300 ease-linear transition-all duration-150"
                     >
                         <div class="p-6">
-                            <span class="block text-xl text-slate-600">
+                            <span class="block text-xl text-slate-600 mb-4">
                                 Generate Surat Keluar
                             </span>
-                            <span
-                                class="block text-base mb-2 mt-1 text-slate-400"
+                            <div
+                                class="flex justify-between gap-4 border-b mb-2"
                             >
-                                {{ types[form.type] || "" }}
-                            </span>
-                            <div class="flex justify-between gap-4">
+                                <span
+                                    class="block text-base mb-2 mt-1 text-slate-400"
+                                >
+                                    {{ types[form.type] || "" }}
+                                </span>
                                 <div
                                     class="flex flex-shrink items-center gap-2"
                                 >
-                                    <button
-                                        type="button"
-                                        class="mb-2 inline-flex rounded-3xl border border-blue-300 py-1 px-5 text-sm font-medium text-slate-800 bg-blue-200 hover:bg-blue-500 hover:text-white"
-                                        @click="genDocument"
-                                    >
-                                        Generate
-                                    </button>
                                     <ActionMessage
-                                        v-if="!form_gen.hasErrors"
-                                        :on="form_gen.recentlySuccessful"
+                                        :on="generated_success"
                                         class="mr-3"
                                     >
                                         Berhasil.
                                     </ActionMessage>
-                                    <InputError
-                                        v-else
-                                        v-for="err in form_gen.errors"
-                                        :key="`${err}`"
-                                        :message="`${['err']}`"
-                                        class="mt-2"
-                                    />
-                                </div>
-                                <div
-                                    v-if="
-                                        form_gen.wasSuccessful &&
-                                        (form.generated_pdf ||
-                                            form.generated_doc)
-                                    "
-                                    class="flex flex-shrink gap-2"
-                                >
-                                    <a
-                                        v-if="form.generated_pdf"
-                                        :href="`${route('file.view')}?${
-                                            query.pdf
-                                        }`"
-                                        target="_blank"
-                                        class="mb-2 inline-flex rounded-3xl border border-indigo-300 py-1 px-5 text-sm font-medium text-slate-800 bg-indigo-200 hover:bg-indigo-500 hover:text-white"
+                                    <div
+                                        class="flex flex-shrink items-center gap-2"
                                     >
-                                        Lihat
-                                    </a>
-                                    <a
-                                        v-if="form.generated_pdf"
-                                        :href="`${route('file.download')}?${
-                                            query.pdf
-                                        }`"
-                                        target="_blank"
-                                        class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
-                                    >
-                                        Unduh [.pdf]
-                                    </a>
-                                    <a
-                                        v-if="form.generated_doc"
-                                        :href="`${route('file.download')}?${
-                                            query.doc
-                                        }`"
-                                        target="_blank"
-                                        class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
-                                    >
-                                        Unduh [.docx]
-                                    </a>
-                                    <button
-                                        type="button"
-                                        class="mb-2 inline-flex rounded-3xl border border-red-300 py-1 px-5 text-sm font-medium text-slate-800 bg-red-200 hover:bg-red-500 hover:text-white"
-                                        @click="
-                                            $emit('change:generated', {
-                                                doc: null,
-                                                pdf: null,
-                                            })
+                                        <button
+                                            type="button"
+                                            class="mb-2 inline-flex rounded-3xl border border-blue-300 py-1 px-5 text-sm font-medium text-slate-800 bg-blue-200 hover:bg-blue-500 hover:text-white"
+                                            @click="genDocument"
+                                        >
+                                            Generate
+                                        </button>
+                                    </div>
+                                    <template
+                                        v-if="
+                                            form.generated_pdf ||
+                                            form.generated_doc
                                         "
                                     >
-                                        Hapus
-                                    </button>
+                                        <a
+                                            v-if="form.generated_pdf"
+                                            :href="`${route('file.download')}?${
+                                                query.pdf
+                                            }`"
+                                            target="_blank"
+                                            class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
+                                        >
+                                            Unduh [.pdf]
+                                        </a>
+                                        <a
+                                            v-if="form.generated_doc"
+                                            :href="`${route('file.download')}?${
+                                                query.doc
+                                            }`"
+                                            target="_blank"
+                                            class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
+                                        >
+                                            Unduh [.docx]
+                                        </a>
+                                        <button
+                                            type="button"
+                                            class="mb-2 inline-flex rounded-3xl border border-red-300 py-1 px-5 text-sm font-medium text-slate-800 bg-red-200 hover:bg-red-500 hover:text-white"
+                                            @click="
+                                                $emit('change:generated', {
+                                                    doc: null,
+                                                    pdf: null,
+                                                })
+                                            "
+                                        >
+                                            Hapus
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                            <div
+                                class="flex justify-between gap-4 border-b mb-2"
+                            >
+                                <span
+                                    class="block text-base mb-2 mt-1 text-slate-400"
+                                >
+                                    Surat Perjalanan Dinas
+                                </span>
+                                <div
+                                    class="flex flex-shrink items-center gap-2"
+                                >
+                                    <ActionMessage
+                                        :on="generated_spd_success"
+                                        class="mr-3"
+                                    >
+                                        Berhasil.
+                                    </ActionMessage>
+                                    <div
+                                        class="flex flex-shrink items-center gap-2"
+                                    >
+                                        <button
+                                            type="button"
+                                            class="mb-2 inline-flex rounded-3xl border border-blue-300 py-1 px-5 text-sm font-medium text-slate-800 bg-blue-200 hover:bg-blue-500 hover:text-white"
+                                            @click="genDocumentSPD"
+                                        >
+                                            Generate
+                                        </button>
+                                    </div>
+                                    <template
+                                        v-if="
+                                            form.generated_pdf_spd ||
+                                            form.generated_doc_spd
+                                        "
+                                    >
+                                        <a
+                                            v-if="form.generated_pdf_spd"
+                                            :href="`${route('file.download')}?${
+                                                query.pdf_spd
+                                            }`"
+                                            target="_blank"
+                                            class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
+                                        >
+                                            Unduh [.pdf]
+                                        </a>
+                                        <a
+                                            v-if="form.generated_doc_spd"
+                                            :href="`${route('file.download')}?${
+                                                query.doc_spd
+                                            }`"
+                                            target="_blank"
+                                            class="mb-2 inline-flex rounded-3xl border border-sky-300 py-1 px-5 text-sm font-medium text-slate-800 bg-sky-200 hover:bg-sky-500 hover:text-white"
+                                        >
+                                            Unduh [.docx]
+                                        </a>
+                                        <button
+                                            type="button"
+                                            class="mb-2 inline-flex rounded-3xl border border-red-300 py-1 px-5 text-sm font-medium text-slate-800 bg-red-200 hover:bg-red-500 hover:text-white"
+                                            @click="
+                                                $emit('change:generated_spd', {
+                                                    doc: null,
+                                                    pdf: null,
+                                                })
+                                            "
+                                        >
+                                            Hapus
+                                        </button>
+                                    </template>
                                 </div>
                             </div>
                         </div>

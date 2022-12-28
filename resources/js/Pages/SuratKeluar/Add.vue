@@ -7,13 +7,11 @@ import Form from "./Form.vue";
 
 const props = defineProps({
     type: String,
-    urut: String,
     reference: Object,
 });
 
 const formComp = ref(null);
 const form = useForm({
-    urut: props.urut || "000",
     type: props.type || "tugas_panwas",
     nomor: "",
     tanggal: DateTime.now().toISODate(),
@@ -61,6 +59,10 @@ const submit = () => {
                 @change:generated="
                     form.generated_doc = $event.doc;
                     form.generated_pdf = $event.pdf;
+                "
+                @change:generated_spd="
+                    form.generated_doc_spd = $event.doc;
+                    form.generated_pdf_spd = $event.pdf;
                 "
                 @submit="submit"
             >

@@ -14,6 +14,7 @@ const form = useForm({
     perihal: "",
     tempat: "",
     keterangan: "",
+    jenis: "",
     doc: null,
 });
 

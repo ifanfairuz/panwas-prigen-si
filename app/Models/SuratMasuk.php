@@ -32,6 +32,7 @@ class SuratMasuk extends Model
         'perihal',
         'tempat',
         'keterangan',
-        'doc'
+        'doc',
+        'jenis',
     ];
 }

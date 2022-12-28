@@ -15,6 +15,7 @@ defineProps({
 
 const columns = [
     { text: "Tanggal", value: "tanggal", sortable: true },
+    { text: "Jenis", value: "jenis", sortable: true },
     { text: "Nomor", value: "nomor", sortable: true },
     { text: "Dari", value: "dari", sortable: true },
     { text: "Perihal", value: "perihal", sortable: true },

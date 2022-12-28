@@ -31,7 +31,7 @@ class SuratMasukController extends Controller
      */
     public function index(Request $request)
     {
-        $datas = SuratMasuk::orderBy('tanggal')->get();
+        $datas = SuratMasuk::orderBy('tanggal', 'desc')->get();
         return Inertia::render('SuratMasuk/Index', [
             'datas' => $datas
         ]);
@@ -77,7 +77,7 @@ class SuratMasukController extends Controller
     public function create(Request $request)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'jenis', 'doc']);
             Validator::make($input, [
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
@@ -86,6 +86,7 @@ class SuratMasukController extends Controller
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
                 'keterangan' => ['nullable', 'string'],
+                'jenis' => ['nullable', 'string'],
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
             ])->validate();
 
@@ -139,7 +140,7 @@ class SuratMasukController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'doc']);
+            $input = $request->only(['nomor', 'tanggal', 'dari', 'alamat', 'perihal', 'tempat', 'keterangan', 'jenis', 'doc']);
             Validator::make($input, [
                 'nomor' => ['required', 'string', 'max:255'],
                 'tanggal' => ['required', 'date'],
@@ -148,6 +149,7 @@ class SuratMasukController extends Controller
                 'perihal' => ['required', 'string', 'max:255'],
                 'tempat' => ['nullable', 'string', 'max:255'],
                 'keterangan' => ['nullable', 'string'],
+                'jenis' => ['nullable', 'string'],
                 'doc' => ['nullable', 'sometimes', 'file', 'max:10000', 'mimes:doc,docx,pdf'],
             ])->validate();
             $model = SuratMasuk::findOrFail($id);
@@ -160,6 +162,7 @@ class SuratMasukController extends Controller
                 'perihal' => $input['perihal'],
                 'tempat' => $input['tempat'],
                 'keterangan' => $input['keterangan'],
+                'jenis' => $input['jenis'],
             ];
             DB::transaction(function () use ($model, $update, $input) {
                 return tap($model->forceFill($update)->save() ? $model : $model, function (SuratMasuk $s) use ($input) {
@@ -178,10 +181,10 @@ class SuratMasukController extends Controller
             throw $exception;
         } catch (FilesystemException | UnableToWriteFile $exception) {
             DB::rollBack();
-            return response()->renderErrorBanner('SuratMasuk/Edit', "Gagal unggah dokumen - {$exception->getMessage()}");
+            return response()->injectErrorBanner($this->edit($request, $id), "Gagal unggah dokumen - {$exception->getMessage()}");
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->renderErrorBanner('SuratMasuk/Edit', "Gagal - {$exception->getMessage()}");
+            return response()->injectErrorBanner($this->edit($request, $id), "Gagal - {$exception->getMessage()}");
         }
     }
 

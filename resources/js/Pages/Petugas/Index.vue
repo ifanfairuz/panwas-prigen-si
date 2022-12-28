@@ -17,6 +17,8 @@ const columns = [
     { text: "ID", value: "id", sortable: true },
     { text: "Nama", value: "nama", sortable: true },
     { text: "Jabatan", value: "jabatan", sortable: true },
+    { text: "Tingkat", value: "tingkat", sortable: true },
+    { text: "Golongan", value: "pangkat", sortable: true },
     { text: "Action", value: "action", sortable: false, searchable: false },
 ];
 const deletion = ref(null);
@@ -49,6 +51,12 @@ const deletePetugas = () => {
                     <DataTable :headers="columns" :items="datas">
                         <template #item-action="{ id }">
                             <div class="flex gap-2">
+                                <Link
+                                    :href="route('petugas.view', id)"
+                                    class="hover:text-blue-500 px-1"
+                                >
+                                    <i class="fa fa-eye"></i>
+                                </Link>
                                 <Link
                                     :href="route('petugas.edit', id)"
                                     class="hover:text-blue-500"
