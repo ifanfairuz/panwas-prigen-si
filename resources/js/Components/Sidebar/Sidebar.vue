@@ -110,10 +110,10 @@ const setShow = (v) => (show.value = v);
                 </ul>
 
                 <!-- Heading -->
-                <NavHead>Keuangan</NavHead>
+                <!-- <NavHead>Keuangan</NavHead> -->
 
                 <!-- Navigation -->
-                <ul class="md:flex-col md:min-w-full flex flex-col list-none">
+                <!-- <ul class="md:flex-col md:min-w-full flex flex-col list-none">
                     <NavLink
                         :href="route('keuangan.komponen.index')"
                         :active="route().current('keuangan.komponen.*')"
@@ -128,7 +128,7 @@ const setShow = (v) => (show.value = v);
                         <i class="fas fa-usd mr-2 text-sm"></i>
                         Pembukuan
                     </NavLink>
-                </ul>
+                </ul> -->
 
                 <template v-if="$page.props.isAdministrator">
                     <!-- Heading -->

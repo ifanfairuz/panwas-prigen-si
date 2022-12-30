@@ -46,6 +46,11 @@
   dependencies:
     nprogress "^0.2.0"
 
+"@kurkle/color@^0.3.0":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@kurkle/color/-/color-0.3.1.tgz#ef72bc8022ccf77cdd2715097f062ee591ec145c"
+  integrity sha512-hW0GwZj06z/ZFUW2Espl7toVDjghJN+EKqyXzPSV8NV89d5BYp5rRMBJoc+aUN0x5OXDMeRQHazejr2Xmqj2tw==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -293,6 +298,13 @@ caniuse-lite@^1.0.30001400, caniuse-lite@^1.0.30001426:
   version "1.0.30001435"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001435.tgz#502c93dbd2f493bee73a408fe98e98fb1dad10b2"
   integrity sha512-kdCkUTjR+v4YAJelyiDTqiu82BDr4W4CP5sgTA0ZBmqn30XfS2ZghPLMowik9TPhS+psWJiUNxsqLyurDbmutA==
+
+chart.js@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-4.1.1.tgz#9bd96ddaa444205ec55dd103f713f65530e9a2df"
+  integrity sha512-P0pCosNXp+LR8zO/QTkZKT6Hb7p0DPFtypEeVOf+6x06hX13NIb75R0DXUA4Ksx/+48chDQKtCCmRCviQRTqsA==
+  dependencies:
+    "@kurkle/color" "^0.3.0"
 
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.3:
   version "3.5.3"
@@ -1086,6 +1098,11 @@ vite@^3.0.0:
     rollup "^2.79.1"
   optionalDependencies:
     fsevents "~2.3.2"
+
+vue-chartjs@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-5.1.0.tgz#54330db7d45b17274e9ca3a37e387848f25c929c"
+  integrity sha512-O/VllsyZn1NzRJAYEbpgfbk/N+EB1nCHLsc/ullPNWuU2YRHxgF5SS8OwWc0K2IfVZNMw94Bp6HUqi2svDQzrQ==
 
 vue-select@^4.0.0-beta.6:
   version "4.0.0-beta.6"

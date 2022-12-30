@@ -32,6 +32,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/chart/surat_month', [DashboardController::class, 'chart_surat_month'])->name('dashboard.chart.surat_month');
 
     // file
     Route::name('file.')->prefix('file')->group(function () {

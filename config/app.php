@@ -216,4 +216,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'start_data' => '2022-11',
+
 ];

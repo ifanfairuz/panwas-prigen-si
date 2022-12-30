@@ -2,7 +2,6 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ActionSection from "@/Components/Section/ActionSection.vue";
 import DescriptionItem from "@/Components/Description/DescriptionItem.vue";
-import DescriptionItemFile from "@/Components/Description/DescriptionItemFile.vue";
 import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 import { Link } from "@inertiajs/inertia-vue3";
 
@@ -23,7 +22,7 @@ const props = defineProps({
                 </template>
                 <template #aside>
                     <div class="h-full flex items-center">
-                        <Link :href="route('surat.keluar.index')" replace>
+                        <Link :href="route('petugas.index')" replace>
                             <SecondaryButton>
                                 <i class="fa fa-times"></i>
                             </SecondaryButton>
