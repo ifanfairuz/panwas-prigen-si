@@ -42,13 +42,15 @@ const onChangeFile = (v) => {
 };
 const genNomor = () => {
     if (props.prefix === "edit") return;
-    const labela = props.form.type.match(/^(\w+)_panwas$/) ? "RT.01" : "KP.01";
+    // const labela = props.form.type.match(/^(\w+)_panwas$/) ? "KP.01.00" : "KP.01.00";
+    const labela = "KP.01.00";
     const labelb = props.form.type.match(/^(\w+)_panwas$/) ? "K.JI" : "JI";
     const from_date = DateTime.fromFormat(props.form.tanggal, "yyyy-MM-dd");
+    const location = "20.10";
     const mY = (from_date.isValid ? from_date : DateTime.now()).toFormat(
         "MM/yyyy"
     );
-    const code = `/${labela}/${labelb}-20.10/`;
+    const code = `/${labela}/${labelb}-${location}/`;
     const tahun = mY.split("/").pop();
     axios
         .get(route("surat.keluar.get_urut"), {
@@ -58,7 +60,7 @@ const genNomor = () => {
             urut.value = res.data.urut;
             emit(
                 "change:nomor",
-                `${urut.value}/${labela}/${labelb}-20.10/${mY}`
+                `${urut.value}/${labela}/${labelb}-${location}/${mY}`
             );
         });
 };
