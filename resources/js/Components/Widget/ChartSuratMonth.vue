@@ -27,16 +27,17 @@ const start = ref(
         DateTime.now().minus({ months: 4 }).toFormat("yyyy-MM")
 );
 const end = ref(props.default_month?.end || DateTime.now().toFormat("yyyy-MM"));
+const same_year = computed(
+    () => start.value.substring(0, 4) === end.value.substring(0, 4)
+);
 const months_label = computed(() => {
     try {
         const ranges = [start.value, end.value];
         const options = props.months_options.filter(
             ({ code }) => ranges.indexOf(code) > -1
         );
-        return options
-            .map((o) => o.label)
-            .join(" - ")
-            .replaceAll(` ${this_year}`, "");
+        const label = options.map((o) => o.label).join(" - ");
+        return same_year ? label.replaceAll(` ${this_year}`, "") : label;
     } catch (error) {
         return "";
     }
@@ -49,7 +50,9 @@ const chart_labels = computed(() => {
             const date = dateFromOption(o.code).toJSDate();
             return date >= s && date <= e;
         })
-        .map((o) => o.label.replaceAll(` ${this_year}`, ""));
+        .map((o) =>
+            same_year ? o.label.replaceAll(` ${this_year}`, "") : o.label
+        );
 });
 const count_data = ref({
     masuk: [],
